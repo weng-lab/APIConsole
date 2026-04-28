@@ -1,13 +1,13 @@
-import { clerkClient, auth } from '@clerk/nextjs/server';
-import { eq } from 'drizzle-orm';
-import { db } from '@/db';
-import { apiKeys } from '@/db/schema';
+import { clerkClient, auth } from "@clerk/nextjs/server";
+import { eq } from "drizzle-orm";
+import { db } from "@/db";
+import { apiKeys } from "@/db/schema";
 
 export async function DELETE() {
   const { userId } = await auth();
 
   if (!userId) {
-    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
   await db.delete(apiKeys).where(eq(apiKeys.clerkUserId, userId));

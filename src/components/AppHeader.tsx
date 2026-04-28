@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { Show } from '@clerk/nextjs';
-import { AppBar, Box, Button, Toolbar, Typography } from '@mui/material';
-import { usePathname } from 'next/navigation';
-import { AccountMenu } from '@/components/AccountMenu';
+import Link from "next/link";
+import { Show } from "@clerk/nextjs";
+import { AppBar, Box, Button, Toolbar, Typography } from "@mui/material";
+import { usePathname } from "next/navigation";
+import { AccountMenu } from "@/components/AccountMenu";
 
 export function AppHeader() {
   const pathname = usePathname();
@@ -18,10 +18,10 @@ export function AppHeader() {
             href="/"
             variant="h6"
             sx={{
-              color: 'inherit',
-              display: 'inline-block',
+              color: "inherit",
+              display: "inline-block",
               fontWeight: 700,
-              textDecoration: 'none',
+              textDecoration: "none",
             }}
           >
             API Console
@@ -31,7 +31,7 @@ export function AppHeader() {
         <Show when="signed-in">
           <AccountMenu />
         </Show>
-        {pathname === '/' ? null : (
+        {pathname === "/" ? null : (
           <Show when="signed-out">
             <Button component={Link} href="/" variant="text" color="inherit">
               Sign in

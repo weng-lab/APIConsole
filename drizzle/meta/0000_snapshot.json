@@ -71,9 +71,7 @@
         "api_keys_key_value_unique": {
           "name": "api_keys_key_value_unique",
           "nullsNotDistinct": false,
-          "columns": [
-            "key_value"
-          ]
+          "columns": ["key_value"]
         }
       },
       "policies": {},

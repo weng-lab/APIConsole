@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useClerk, useUser } from '@clerk/nextjs';
+import { useState } from "react";
+import { useClerk, useUser } from "@clerk/nextjs";
 import {
   Alert,
   Button,
@@ -15,22 +15,25 @@ import {
   Stack,
   TextField,
   Typography,
-} from '@mui/material';
+} from "@mui/material";
 
-const DELETE_CONFIRMATION_TEXT = 'Delete account';
+const DELETE_CONFIRMATION_TEXT = "Delete account";
 
 export function AccountMenu() {
   const { signOut } = useClerk();
   const { user } = useUser();
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
-  const [confirmationText, setConfirmationText] = useState('');
+  const [confirmationText, setConfirmationText] = useState("");
   const [deletingAccount, setDeletingAccount] = useState(false);
-  const [deleteAccountError, setDeleteAccountError] = useState<string | null>(null);
+  const [deleteAccountError, setDeleteAccountError] = useState<string | null>(
+    null,
+  );
   const open = Boolean(anchorEl);
   const email = user?.primaryEmailAddress?.emailAddress;
-  const label = user?.firstName ?? email ?? 'Account';
-  const canDeleteAccount = confirmationText === DELETE_CONFIRMATION_TEXT && !deletingAccount;
+  const label = user?.firstName ?? email ?? "Account";
+  const canDeleteAccount =
+    confirmationText === DELETE_CONFIRMATION_TEXT && !deletingAccount;
 
   function closeMenu() {
     setAnchorEl(null);
@@ -38,13 +41,13 @@ export function AccountMenu() {
 
   async function handleSignOut() {
     closeMenu();
-    await signOut({ redirectUrl: '/' });
+    await signOut({ redirectUrl: "/" });
   }
 
   function openDeleteDialog() {
     closeMenu();
     setDeleteAccountError(null);
-    setConfirmationText('');
+    setConfirmationText("");
     setDeleteDialogOpen(true);
   }
 
@@ -55,7 +58,7 @@ export function AccountMenu() {
 
     setDeleteDialogOpen(false);
     setDeleteAccountError(null);
-    setConfirmationText('');
+    setConfirmationText("");
   }
 
   async function deleteAccount() {
@@ -67,16 +70,20 @@ export function AccountMenu() {
     setDeleteAccountError(null);
 
     try {
-      const response = await fetch('/api/account', { method: 'DELETE' });
+      const response = await fetch("/api/account", { method: "DELETE" });
 
       if (!response.ok) {
-        setDeleteAccountError('Could not delete your account. Please try again.');
+        setDeleteAccountError(
+          "Could not delete your account. Please try again.",
+        );
         return;
       }
 
-      await signOut({ redirectUrl: '/' });
+      await signOut({ redirectUrl: "/" });
     } catch {
-      setDeleteAccountError('Could not confirm account deletion. Please check your connection and try again.');
+      setDeleteAccountError(
+        "Could not confirm account deletion. Please check your connection and try again.",
+      );
     } finally {
       setDeletingAccount(false);
     }
@@ -90,7 +97,14 @@ export function AccountMenu() {
         sx={{ maxWidth: { xs: 160, sm: 240 }, minWidth: 0 }}
         variant="text"
       >
-        <Typography component="span" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+        <Typography
+          component="span"
+          sx={{
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          }}
+        >
           {label}
         </Typography>
       </Button>
@@ -98,32 +112,46 @@ export function AccountMenu() {
         anchorEl={anchorEl}
         open={open}
         onClose={closeMenu}
-        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
-        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+        anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+        transformOrigin={{ horizontal: "right", vertical: "top" }}
       >
         {email ? (
           <MenuItem disabled>
-            <Typography variant="body2" sx={{ maxWidth: 280, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+            <Typography
+              variant="body2"
+              sx={{
+                maxWidth: 280,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+              }}
+            >
               {email}
             </Typography>
           </MenuItem>
         ) : null}
         {email ? <Divider /> : null}
-        <MenuItem onClick={openDeleteDialog} sx={{ color: 'error.main' }}>
+        <MenuItem onClick={openDeleteDialog} sx={{ color: "error.main" }}>
           Delete account
         </MenuItem>
         <MenuItem onClick={handleSignOut}>Sign out</MenuItem>
       </Menu>
 
-      <Dialog fullWidth maxWidth="xs" open={deleteDialogOpen} onClose={closeDeleteDialog}>
+      <Dialog
+        fullWidth
+        maxWidth="xs"
+        open={deleteDialogOpen}
+        onClose={closeDeleteDialog}
+      >
         <DialogTitle>Delete account</DialogTitle>
         <DialogContent>
           <Stack spacing={2} sx={{ pt: 1 }}>
             <Typography color="text.secondary">
-              This permanently deletes your account and removes the API key associated with it. This action cannot be
-              undone.
+              This permanently deletes your account and removes the API key
+              associated with it. This action cannot be undone.
             </Typography>
-            {deleteAccountError ? <Alert severity="error">{deleteAccountError}</Alert> : null}
+            {deleteAccountError ? (
+              <Alert severity="error">{deleteAccountError}</Alert>
+            ) : null}
             <TextField
               autoFocus
               disabled={deletingAccount}
@@ -138,8 +166,13 @@ export function AccountMenu() {
           <Button disabled={deletingAccount} onClick={closeDeleteDialog}>
             Cancel
           </Button>
-          <Button color="error" disabled={!canDeleteAccount} onClick={deleteAccount} variant="contained">
-            {deletingAccount ? 'Deleting…' : 'Delete account'}
+          <Button
+            color="error"
+            disabled={!canDeleteAccount}
+            onClick={deleteAccount}
+            variant="contained"
+          >
+            {deletingAccount ? "Deleting…" : "Delete account"}
           </Button>
         </DialogActions>
       </Dialog>
