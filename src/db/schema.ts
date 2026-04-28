@@ -1,4 +1,4 @@
-import { index, pgTable, text, timestamp, uuid, varchar } from 'drizzle-orm/pg-core';
+import { pgTable, text, timestamp, uniqueIndex, uuid, varchar } from 'drizzle-orm/pg-core';
 
 export const apiKeys = pgTable(
   'api_keys',
@@ -8,7 +8,6 @@ export const apiKeys = pgTable(
     name: varchar('name', { length: 120 }).default('Default').notNull(),
     keyValue: text('key_value').notNull().unique(),
     createdAt: timestamp('created_at', { withTimezone: true }).defaultNow().notNull(),
-    revokedAt: timestamp('revoked_at', { withTimezone: true }),
   },
-  (table) => [index('api_keys_clerk_user_id_idx').on(table.clerkUserId)],
+  (table) => [uniqueIndex('api_keys_clerk_user_id_unique').on(table.clerkUserId)],
 );

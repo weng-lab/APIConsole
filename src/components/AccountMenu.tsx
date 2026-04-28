@@ -71,15 +71,15 @@ export function AccountMenu() {
 
       if (!response.ok) {
         setDeleteAccountError('Could not delete your account. Please try again.');
-        setDeletingAccount(false);
         return;
       }
-    } catch {
-      // Clerk can invalidate the session before the browser receives the response.
-      // At this point the destructive request was sent, so leave the protected UI.
-    }
 
-    window.location.replace('/');
+      await signOut({ redirectUrl: '/' });
+    } catch {
+      setDeleteAccountError('Could not confirm account deletion. Please check your connection and try again.');
+    } finally {
+      setDeletingAccount(false);
+    }
   }
 
   return (

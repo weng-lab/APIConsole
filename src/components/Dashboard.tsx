@@ -29,18 +29,23 @@ export function Dashboard() {
   useEffect(() => {
     async function loadApiKey() {
       setLoading(true);
+      setError(null);
 
-      const response = await fetch("/api/api-key");
+      try {
+        const response = await fetch("/api/api-key");
 
-      if (!response.ok) {
+        if (!response.ok) {
+          setError("Could not load your API key.");
+          return;
+        }
+
+        const data: { apiKey: ApiKey | null } = await response.json();
+        setApiKey(data.apiKey);
+      } catch {
         setError("Could not load your API key.");
+      } finally {
         setLoading(false);
-        return;
       }
-
-      const data: { apiKey: ApiKey | null } = await response.json();
-      setApiKey(data.apiKey);
-      setLoading(false);
     }
 
     loadApiKey();
@@ -50,33 +55,41 @@ export function Dashboard() {
     setCreating(true);
     setError(null);
 
-    const response = await fetch("/api/api-key", { method: "POST" });
+    try {
+      const response = await fetch("/api/api-key", { method: "POST" });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        setError("Could not create your API key.");
+        return;
+      }
+
+      const data: { apiKey: ApiKey } = await response.json();
+      setApiKey(data.apiKey);
+    } catch {
       setError("Could not create your API key.");
+    } finally {
       setCreating(false);
-      return;
     }
-
-    const data: { apiKey: ApiKey } = await response.json();
-    setApiKey(data.apiKey);
-    setCreating(false);
   }
 
   async function deleteApiKey() {
     setDeleting(true);
     setError(null);
 
-    const response = await fetch("/api/api-key", { method: "DELETE" });
+    try {
+      const response = await fetch("/api/api-key", { method: "DELETE" });
 
-    if (!response.ok) {
+      if (!response.ok) {
+        setError("Could not delete your API key.");
+        return;
+      }
+
+      setApiKey(null);
+    } catch {
       setError("Could not delete your API key.");
+    } finally {
       setDeleting(false);
-      return;
     }
-
-    setApiKey(null);
-    setDeleting(false);
   }
 
   const hasKey = Boolean(apiKey);

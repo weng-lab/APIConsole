@@ -1,5 +1,5 @@
 import { auth } from '@clerk/nextjs/server';
-import { and, eq, isNull } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import { db } from '@/db';
 import { apiKeys } from '@/db/schema';
 import { generateApiKey } from '@/lib/api-keys';
@@ -11,7 +11,7 @@ async function getCurrentApiKey(userId: string) {
       createdAt: apiKeys.createdAt,
     })
     .from(apiKeys)
-    .where(and(eq(apiKeys.clerkUserId, userId), isNull(apiKeys.revokedAt)))
+    .where(eq(apiKeys.clerkUserId, userId))
     .limit(1);
 
   return apiKey ?? null;
@@ -34,18 +34,28 @@ export async function POST() {
     return Response.json({ error: 'Unauthorized' }, { status: 401 });
   }
 
-  const existingKey = await getCurrentApiKey(userId);
+  try {
+    const [createdKey] = await db
+      .insert(apiKeys)
+      .values({
+        clerkUserId: userId,
+        keyValue: generateApiKey(),
+      })
+      .returning({
+        keyValue: apiKeys.keyValue,
+        createdAt: apiKeys.createdAt,
+      });
 
-  if (existingKey) {
-    return Response.json({ apiKey: existingKey });
+    return Response.json({ apiKey: createdKey }, { status: 201 });
+  } catch {
+    const existingKey = await getCurrentApiKey(userId);
+
+    if (existingKey) {
+      return Response.json({ apiKey: existingKey });
+    }
+
+    return Response.json({ error: 'Could not create API key' }, { status: 500 });
   }
-
-  await db.insert(apiKeys).values({
-    clerkUserId: userId,
-    keyValue: generateApiKey(),
-  });
-
-  return Response.json({ apiKey: await getCurrentApiKey(userId) }, { status: 201 });
 }
 
 export async function DELETE() {
