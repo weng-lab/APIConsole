@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Button, IconButton, Tooltip } from '@mui/material';
-import CheckOutlined from '@mui/icons-material/CheckOutlined';
-import ContentCopyOutlined from '@mui/icons-material/ContentCopyOutlined';
+import { useState } from "react";
+import { Button, IconButton, Tooltip } from "@mui/material";
+import CheckOutlined from "@mui/icons-material/CheckOutlined";
+import ContentCopyOutlined from "@mui/icons-material/ContentCopyOutlined";
 
 type CopyButtonProps = {
   value: string;
@@ -21,9 +21,13 @@ export function CopyButton({ value, iconOnly = false }: CopyButtonProps) {
 
   if (iconOnly) {
     return (
-      <Tooltip title={copied ? 'Copied' : 'Copy'}>
+      <Tooltip title={copied ? "Copied" : "Copy"}>
         <IconButton aria-label="Copy secret" size="small" onClick={copy}>
-          {copied ? <CheckOutlined fontSize="small" /> : <ContentCopyOutlined fontSize="small" />}
+          {copied ? (
+            <CheckOutlined fontSize="small" />
+          ) : (
+            <ContentCopyOutlined fontSize="small" />
+          )}
         </IconButton>
       </Tooltip>
     );
@@ -31,7 +35,7 @@ export function CopyButton({ value, iconOnly = false }: CopyButtonProps) {
 
   return (
     <Button variant="outlined" onClick={copy}>
-      {copied ? 'Copied' : 'Copy'}
+      {copied ? "Copied" : "Copy"}
     </Button>
   );
 }
