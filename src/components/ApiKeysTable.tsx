@@ -1,5 +1,3 @@
-'use client';
-
 import {
   Box,
   IconButton,
@@ -11,10 +9,10 @@ import {
   TableHead,
   TableRow,
   Typography,
-} from '@mui/material';
-import DeleteOutlined from '@mui/icons-material/DeleteOutlined';
-import { SecretCell } from '@/components/SecretCell';
-import { formatDate } from '@/lib/format';
+} from "@mui/material";
+import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
+import { SecretCell } from "@/components/SecretCell";
+import { formatDate } from "@/lib/format";
 
 type ApiKeyRow = {
   name?: string;
@@ -29,19 +27,21 @@ type ApiKeysTableProps = {
   onDelete?: () => void;
 };
 
-// Note: rename (pencil) and rotate (refresh) controls and a "Last used" column
-// are intentionally omitted — they would require backend support that doesn't
-// exist yet.
-export function ApiKeysTable({ apiKey, loading = false, deleting = false, onDelete }: ApiKeysTableProps) {
+export function ApiKeysTable({
+  apiKey,
+  loading = false,
+  deleting = false,
+  onDelete,
+}: ApiKeysTableProps) {
   return (
     <TableContainer>
       <Table>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ width: '20%' }}>Name</TableCell>
+            <TableCell sx={{ width: "20%" }}>Name</TableCell>
             <TableCell>Secret</TableCell>
-            <TableCell sx={{ width: '20%' }}>Created</TableCell>
-            <TableCell align="right" sx={{ width: 72 }}>
+            <TableCell sx={{ width: "20%" }}>Created</TableCell>
+            <TableCell align="right" sx={{ width: 96, whiteSpace: "nowrap" }}>
               Actions
             </TableCell>
           </TableRow>
@@ -59,13 +59,15 @@ export function ApiKeysTable({ apiKey, loading = false, deleting = false, onDele
                 <Skeleton width={80} />
               </TableCell>
               <TableCell align="right">
-                <Skeleton width={32} sx={{ ml: 'auto' }} />
+                <Skeleton width={32} sx={{ ml: "auto" }} />
               </TableCell>
             </TableRow>
           ) : apiKey ? (
             <TableRow>
               <TableCell>
-                <Typography sx={{ fontWeight: 600 }}>{apiKey.name ?? 'Default'}</Typography>
+                <Typography sx={{ fontWeight: 600 }}>
+                  {apiKey.name ?? "Default"}
+                </Typography>
               </TableCell>
               <TableCell>
                 <SecretCell value={apiKey.keyValue} />
@@ -89,8 +91,8 @@ export function ApiKeysTable({ apiKey, loading = false, deleting = false, onDele
             </TableRow>
           ) : (
             <TableRow>
-              <TableCell colSpan={4} sx={{ borderBottom: 'none' }}>
-                <Box sx={{ py: 4, textAlign: 'center' }}>
+              <TableCell colSpan={4} sx={{ borderBottom: "none" }}>
+                <Box sx={{ py: 4, textAlign: "center" }}>
                   <Typography color="text.secondary">
                     No API key yet — create one to get started.
                   </Typography>

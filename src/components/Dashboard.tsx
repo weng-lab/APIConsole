@@ -103,16 +103,30 @@ export function Dashboard() {
             direction={{ xs: "column", sm: "row" }}
             spacing={2}
             sx={{
-              alignItems: { xs: "flex-start", sm: "flex-end" },
+              alignItems: { xs: "stretch", sm: "flex-end" },
               justifyContent: "space-between",
             }}
           >
+            <Stack spacing={0.5}>
+              <Typography
+                component="h1"
+                variant="h4"
+                sx={{ fontWeight: 700, letterSpacing: "-0.02em" }}
+              >
+                API keys
+              </Typography>
+              <Typography color="text.secondary">
+                Create and manage the secret key used to access the API.
+              </Typography>
+            </Stack>
+
             <Button
               variant="contained"
               size="large"
               startIcon={<AddOutlined />}
               onClick={createApiKey}
               disabled={actionDisabled}
+              sx={{ alignSelf: { xs: "stretch", sm: "auto" } }}
             >
               {hasKey ? "Limit reached" : creating ? "Creating…" : "New key"}
             </Button>

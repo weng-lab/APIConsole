@@ -84,13 +84,28 @@ export function AccountMenu() {
 
   return (
     <>
-      <Button color="inherit" onClick={(event) => setAnchorEl(event.currentTarget)} variant="text">
-        {label}
+      <Button
+        color="inherit"
+        onClick={(event) => setAnchorEl(event.currentTarget)}
+        sx={{ maxWidth: { xs: 160, sm: 240 }, minWidth: 0 }}
+        variant="text"
+      >
+        <Typography component="span" sx={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+          {label}
+        </Typography>
       </Button>
-      <Menu anchorEl={anchorEl} open={open} onClose={closeMenu} anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}>
+      <Menu
+        anchorEl={anchorEl}
+        open={open}
+        onClose={closeMenu}
+        anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
+        transformOrigin={{ horizontal: 'right', vertical: 'top' }}
+      >
         {email ? (
           <MenuItem disabled>
-            <Typography variant="body2">{email}</Typography>
+            <Typography variant="body2" sx={{ maxWidth: 280, overflow: 'hidden', textOverflow: 'ellipsis' }}>
+              {email}
+            </Typography>
           </MenuItem>
         ) : null}
         {email ? <Divider /> : null}
@@ -124,7 +139,7 @@ export function AccountMenu() {
             Cancel
           </Button>
           <Button color="error" disabled={!canDeleteAccount} onClick={deleteAccount} variant="contained">
-            {deletingAccount ? 'Deleting...' : 'Delete account'}
+            {deletingAccount ? 'Deleting…' : 'Delete account'}
           </Button>
         </DialogActions>
       </Dialog>
