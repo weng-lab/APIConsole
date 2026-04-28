@@ -47,3 +47,15 @@ export async function POST() {
 
   return Response.json({ apiKey: await getCurrentApiKey(userId) }, { status: 201 });
 }
+
+export async function DELETE() {
+  const { userId } = await auth();
+
+  if (!userId) {
+    return Response.json({ error: 'Unauthorized' }, { status: 401 });
+  }
+
+  await db.delete(apiKeys).where(eq(apiKeys.clerkUserId, userId));
+
+  return Response.json({ deleted: true });
+}
