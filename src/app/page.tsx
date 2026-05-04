@@ -57,6 +57,18 @@ const clerkAppearance = {
       borderColor: "#cfcfcf",
       boxShadow: "none",
       fontSize: "1rem",
+      '&[type="checkbox"]': {
+        width: "18px",
+        height: "18px",
+        minHeight: "auto",
+        flexShrink: 0,
+      },
+    },
+    formFieldInput__signOutOfOtherSessions: {
+      width: "18px",
+      height: "18px",
+      minHeight: "auto",
+      flexShrink: 0,
     },
     formButtonPrimary: {
       minHeight: "54px",
