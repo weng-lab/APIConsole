@@ -35,6 +35,7 @@ export function Dashboard() {
   const [loading, setLoading] = useState(false);
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const [renaming, setRenaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -103,6 +104,33 @@ export function Dashboard() {
     }
   }
 
+  async function renameApiKey(name: string) {
+    setRenaming(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/api-key", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name }),
+      });
+
+      if (!response.ok) {
+        setError("Could not rename your API key.");
+        return false;
+      }
+
+      const data: { apiKey: ApiKeyResponse } = await response.json();
+      setApiKey(withApiKeyStatus(data.apiKey));
+      return true;
+    } catch {
+      setError("Could not rename your API key.");
+      return false;
+    } finally {
+      setRenaming(false);
+    }
+  }
+
   const actionDisabled =
     loading || creating || deleting || (Boolean(apiKey) && !apiKey?.expired);
 
@@ -155,7 +183,9 @@ export function Dashboard() {
               apiKey={apiKey}
               loading={loading}
               deleting={deleting}
+              renaming={renaming}
               onDelete={deleteApiKey}
+              onRename={renameApiKey}
             />
           </Paper>
 

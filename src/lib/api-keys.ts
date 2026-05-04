@@ -69,6 +69,22 @@ export async function deleteApiKeyForUser(clerkUserId: string) {
   await db.delete(apiKeys).where(eq(apiKeys.clerkUserId, clerkUserId));
 }
 
+export async function renameApiKeyForUser(clerkUserId: string, name: string) {
+  const [apiKey] = await db
+    .update(apiKeys)
+    .set({ name: name.trim() })
+    .where(eq(apiKeys.clerkUserId, clerkUserId))
+    .returning({
+      id: apiKeys.id,
+      clerkUserId: apiKeys.clerkUserId,
+      name: apiKeys.name,
+      keyValue: apiKeys.keyValue,
+      createdAt: apiKeys.createdAt,
+    });
+
+  return apiKey ? withExpiration(apiKey) : null;
+}
+
 export async function validateApiKey(
   keyValue: string,
 ): Promise<ValidateApiKeyResult> {
