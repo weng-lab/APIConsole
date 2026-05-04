@@ -35,18 +35,18 @@ print(result)
 
 where the `result` is
 
-```
+```json
 {
-    u'data': {
-        u'cCREQuery': {
-            u'coordinates': {
-                u'start': 5280547,
-                u'end': 5280897,
-                u'chromosome': u'chr11'
-            },
-            u'rDHS': u'EH38D2417606',
-            u'assembly': u'grch38'
-        }
+  "data": {
+    "cCREQuery": {
+      "coordinates": {
+        "start": 5280547,
+        "end": 5280897,
+        "chromosome": "chr11"
+      },
+      "rDHS": "EH38D2417606",
+      "assembly": "grch38"
     }
+  }
 }
 ```
