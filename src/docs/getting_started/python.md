@@ -10,13 +10,13 @@ variables = {
   "assembly": "grch38"
 }
 query = """
-query cCREQuery($accession: [String!], $assembly: String!) { 
-  cCREQuery(accession: $accession, assembly: $assembly) { 
+query cCREQuery($accession: [String!], $assembly: String!) {
+  cCREQuery(accession: $accession, assembly: $assembly) {
     coordinates {
         start
         end
         chromosome
-      } 
+      }
       rDHS
       assembly
     }

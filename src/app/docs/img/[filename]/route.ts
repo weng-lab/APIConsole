@@ -29,7 +29,7 @@ export async function GET(_: Request, { params }: ImageRouteProps) {
 
     return new Response(image, {
       headers: {
-        "Cache-Control": "public, max-age=31536000, immutable",
+        "Cache-Control": "private, max-age=3600",
         "Content-Type": contentType,
       },
     });

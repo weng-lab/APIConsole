@@ -104,11 +104,45 @@ export function getDocBySlug(slug: string[] = []) {
   return docsPages.find((page) => page.slug.join("/") === slug.join("/")) ?? null;
 }
 
-export function getDocHrefForMarkdownPath(href: string) {
-  const normalizedHref = href.replace(/^\.\//, "");
+function isExternalHref(href: string) {
+  return /^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith("//");
+}
+
+export function getDocHrefForMarkdownPath(href: string, currentFilePath: string) {
+  if (href.startsWith("#") || isExternalHref(href)) {
+    return href;
+  }
+
+  const [hrefWithoutHash, hash] = href.split("#", 2);
+
+  if (!hrefWithoutHash.endsWith(".md")) {
+    return href;
+  }
+
+  const currentDirectory = path.posix.dirname(currentFilePath);
+  const normalizedHref = path.posix.normalize(
+    path.posix.join(currentDirectory === "." ? "" : currentDirectory, hrefWithoutHash),
+  );
   const page = docsPages.find((doc) => doc.filePath === normalizedHref);
 
-  return page?.href ?? href;
+  if (!page) {
+    return href;
+  }
+
+  return hash ? `${page.href}#${hash}` : page.href;
+}
+
+export function getDocImageSrc(src: string, currentFilePath: string) {
+  if (isExternalHref(src) || src.startsWith("/") || src.startsWith("#")) {
+    return src;
+  }
+
+  const currentDirectory = path.posix.dirname(currentFilePath);
+  const normalizedSrc = path.posix.normalize(
+    path.posix.join(currentDirectory === "." ? "" : currentDirectory, src),
+  );
+
+  return normalizedSrc.startsWith("img/") ? `/docs/${normalizedSrc}` : src;
 }
 
 export async function readDocMarkdown(doc: DocPage) {

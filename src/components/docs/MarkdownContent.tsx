@@ -2,21 +2,23 @@ import { Box, Typography } from "@mui/material";
 import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
-import { getDocHrefForMarkdownPath, getHeadingId } from "@/lib/docs";
+import { CodeBlock } from "@/components/docs/CodeBlock";
+import { getDocHrefForMarkdownPath, getDocImageSrc, getHeadingId } from "@/lib/docs";
 
 type MarkdownContentProps = {
+  currentFilePath: string;
   markdown: string;
 };
 
-function normalizeImageSrc(src: unknown) {
+function normalizeImageSrc(src: unknown, currentFilePath: string) {
   if (typeof src !== "string") {
     return undefined;
   }
 
-  return src.startsWith("img/") ? `/docs/${src}` : src;
+  return getDocImageSrc(src, currentFilePath);
 }
 
-export function MarkdownContent({ markdown }: MarkdownContentProps) {
+export function MarkdownContent({ currentFilePath, markdown }: MarkdownContentProps) {
   return (
     <Box
       className="markdown-body"
@@ -74,16 +76,6 @@ export function MarkdownContent({ markdown }: MarkdownContentProps) {
           p: 2,
         },
         "& summary": { cursor: "pointer", fontWeight: 600 },
-        "& pre": {
-          bgcolor: "#1f1f1f",
-          borderRadius: 1,
-          color: "#f4f4f4",
-          fontSize: "0.8125rem",
-          lineHeight: 1.6,
-          mb: 2,
-          overflowX: "auto",
-          p: 2,
-        },
         "& code": {
           fontFamily:
             '"SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace',
@@ -104,7 +96,7 @@ export function MarkdownContent({ markdown }: MarkdownContentProps) {
 
             return (
               <a
-                href={href ? getDocHrefForMarkdownPath(href) : href}
+                href={href ? getDocHrefForMarkdownPath(href, currentFilePath) : href}
                 rel={isExternal ? "noopener noreferrer" : undefined}
                 target={isExternal ? "_blank" : undefined}
               >
@@ -112,6 +104,9 @@ export function MarkdownContent({ markdown }: MarkdownContentProps) {
               </a>
             );
           },
+          code: ({ children, className }) => (
+            <CodeBlock className={className}>{children}</CodeBlock>
+          ),
           h1: ({ children }) => (
             <Typography component="h1" id={getHeadingId(children)}>
               {children}
@@ -128,7 +123,11 @@ export function MarkdownContent({ markdown }: MarkdownContentProps) {
             </Typography>
           ),
           img: ({ alt, src }) => (
-            <Box component="img" src={normalizeImageSrc(src)} alt={alt ?? ""} />
+            <Box
+              component="img"
+              src={normalizeImageSrc(src, currentFilePath)}
+              alt={alt ?? ""}
+            />
           ),
         }}
         rehypePlugins={[rehypeRaw]}

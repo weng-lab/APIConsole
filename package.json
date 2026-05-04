@@ -28,6 +28,7 @@
     "react": "latest",
     "react-dom": "latest",
     "react-markdown": "^10.1.0",
+    "react-syntax-highlighter": "^16.1.1",
     "rehype-raw": "^7.0.0",
     "remark-gfm": "^4.0.1"
   },
@@ -35,6 +36,7 @@
     "@types/node": "latest",
     "@types/react": "latest",
     "@types/react-dom": "latest",
+    "@types/react-syntax-highlighter": "^15.5.13",
     "dotenv": "latest",
     "drizzle-kit": "latest",
     "eslint": "^9.39.4",

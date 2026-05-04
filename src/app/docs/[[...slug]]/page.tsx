@@ -40,7 +40,7 @@ export default async function DocsPage({ params }: DocsPageProps) {
 
   return (
     <DocsLayout activeHref={doc.href} title={doc.title}>
-      <MarkdownContent markdown={markdown} />
+      <MarkdownContent currentFilePath={doc.filePath} markdown={markdown} />
     </DocsLayout>
   );
 }
