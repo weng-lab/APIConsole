@@ -1,6 +1,6 @@
 import { SignIn } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
-import { Box, Container, Paper, Stack, Typography } from "@mui/material";
+import { Box, Paper, Stack, Typography } from "@mui/material";
 import { redirect } from "next/navigation";
 import { clerkAppearance } from "@/lib/clerk-appearance";
 
@@ -18,37 +18,41 @@ export default async function Home() {
         flex: 1,
         display: "grid",
         placeItems: "center",
-        py: { xs: 4, sm: 8 },
+        px: 2,
+        py: { xs: 4, sm: 7 },
       }}
     >
-      <Container maxWidth="sm">
-        <Paper sx={{ p: { xs: 2, sm: 4 } }}>
-          <Stack spacing={3} sx={{ alignItems: "center" }}>
-            <Stack spacing={1} sx={{ textAlign: "center" }}>
-              <Typography
-                component="h1"
-                variant="h4"
-                sx={{ fontWeight: 700, letterSpacing: "-0.02em" }}
-              >
-                API Console
-              </Typography>
-              <Typography color="text.secondary">
-                Sign in or create an account to manage your API key.
-              </Typography>
-            </Stack>
-
-            <SignIn
-              appearance={clerkAppearance}
-              fallbackRedirectUrl="/dashboard"
-              forceRedirectUrl="/dashboard"
-              routing="hash"
-              signUpFallbackRedirectUrl="/dashboard"
-              signUpForceRedirectUrl="/dashboard"
-              withSignUp
-            />
+      <Paper
+        sx={{
+          border: "none",
+          borderRadius: 1,
+          maxWidth: 486,
+          px: { xs: 3, sm: 5 },
+          py: { xs: 4, sm: 5 },
+          width: "100%",
+        }}
+      >
+        <Stack spacing={3}>
+          <Stack spacing={0.5}>
+            <Typography component="h1" variant="h5" sx={{ fontWeight: 700 }}>
+              API Console
+            </Typography>
+            <Typography color="text.secondary" variant="caption">
+              Manage your API keys for Weng-Moore lab web tools
+            </Typography>
           </Stack>
-        </Paper>
-      </Container>
+
+          <SignIn
+            appearance={clerkAppearance}
+            fallbackRedirectUrl="/dashboard"
+            forceRedirectUrl="/dashboard"
+            routing="hash"
+            signUpFallbackRedirectUrl="/dashboard"
+            signUpForceRedirectUrl="/dashboard"
+            withSignUp
+          />
+        </Stack>
+      </Paper>
     </Box>
   );
 }

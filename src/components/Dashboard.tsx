@@ -92,13 +92,15 @@ export function Dashboard() {
     }
   }
 
-  const hasKey = Boolean(apiKey);
-  const actionDisabled = loading || creating || deleting || hasKey;
+  const actionDisabled = loading || creating || deleting || Boolean(apiKey);
 
   return (
-    <Box component="main" sx={{ flex: 1, py: { xs: 4, sm: 6 } }}>
-      <Container maxWidth="lg">
-        <Stack spacing={4}>
+    <Box
+      component="main"
+      sx={{ flex: 1, pb: { xs: 7, md: 12 }, pt: { xs: 5, md: 8 } }}
+    >
+      <Container maxWidth="lg" sx={{ maxWidth: { lg: 1120 } }}>
+        <Stack spacing={2.5}>
           <Stack
             direction={{ xs: "column", sm: "row" }}
             spacing={2}
@@ -108,33 +110,35 @@ export function Dashboard() {
             }}
           >
             <Stack spacing={0.5}>
-              <Typography
-                component="h1"
-                variant="h4"
-                sx={{ fontWeight: 700, letterSpacing: "-0.02em" }}
-              >
-                API keys
+              <Typography component="h1" variant="h5" sx={{ fontWeight: 700 }}>
+                API Keys
               </Typography>
-              <Typography color="text.secondary">
-                Create and manage the secret key used to access the API.
+              <Typography color="text.secondary" variant="caption">
+                Create and manage the keys used to access the API. Each key is
+                active for 90 days only
               </Typography>
             </Stack>
 
             <Button
               variant="contained"
-              size="large"
+              size="medium"
               startIcon={<AddOutlined />}
               onClick={createApiKey}
               disabled={actionDisabled}
-              sx={{ alignSelf: { xs: "stretch", sm: "auto" } }}
+              sx={{
+                alignSelf: { xs: "stretch", sm: "auto" },
+                minHeight: 40,
+                minWidth: 160,
+                px: 2.5,
+              }}
             >
-              {hasKey ? "Limit reached" : creating ? "Creating…" : "New key"}
+              {creating ? "Creating..." : "Create New Key"}
             </Button>
           </Stack>
 
           {error ? <Alert severity="error">{error}</Alert> : null}
 
-          <Paper>
+          <Paper sx={{ border: "none", borderRadius: 1, overflow: "hidden" }}>
             <ApiKeysTable
               apiKey={apiKey}
               loading={loading}
@@ -143,9 +147,9 @@ export function Dashboard() {
             />
           </Paper>
 
-          <Typography align="center" color="text.secondary" variant="body2">
-            Treat your secret key like a password. Don&apos;t commit it to
-            source control or share it client-side.
+          <Typography align="center" color="text.secondary" variant="caption">
+            Treat your API keys like your password. Don&apos;t commit it to
+            source control or share it client side
           </Typography>
         </Stack>
       </Container>

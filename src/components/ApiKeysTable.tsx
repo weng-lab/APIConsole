@@ -11,6 +11,7 @@ import {
   Typography,
 } from "@mui/material";
 import DeleteOutlined from "@mui/icons-material/DeleteOutlined";
+import EditOutlined from "@mui/icons-material/EditOutlined";
 import { SecretCell } from "@/components/SecretCell";
 import { formatDate } from "@/lib/format";
 
@@ -35,13 +36,15 @@ export function ApiKeysTable({
 }: ApiKeysTableProps) {
   return (
     <TableContainer>
-      <Table>
+      <Table sx={{ minWidth: 760, tableLayout: "fixed" }}>
         <TableHead>
           <TableRow>
-            <TableCell sx={{ width: "20%" }}>Name</TableCell>
-            <TableCell>Secret</TableCell>
-            <TableCell sx={{ width: "20%" }}>Created</TableCell>
-            <TableCell align="right" sx={{ width: 96, whiteSpace: "nowrap" }}>
+            <TableCell sx={{ width: "13%" }}>Name</TableCell>
+            <TableCell sx={{ width: 44 }} />
+            <TableCell sx={{ width: "48%" }}>Key</TableCell>
+            <TableCell sx={{ width: "13%" }}>Created</TableCell>
+            <TableCell sx={{ width: "8%" }}>Status</TableCell>
+            <TableCell align="right" sx={{ width: 88, whiteSpace: "nowrap" }}>
               Actions
             </TableCell>
           </TableRow>
@@ -53,7 +56,13 @@ export function ApiKeysTable({
                 <Skeleton width={80} />
               </TableCell>
               <TableCell>
+                <Skeleton width={24} />
+              </TableCell>
+              <TableCell>
                 <Skeleton width="80%" />
+              </TableCell>
+              <TableCell>
+                <Skeleton width={80} />
               </TableCell>
               <TableCell>
                 <Skeleton width={80} />
@@ -70,11 +79,24 @@ export function ApiKeysTable({
                 </Typography>
               </TableCell>
               <TableCell>
+                <IconButton aria-label="Rename API key" disabled size="small">
+                  <EditOutlined fontSize="small" />
+                </IconButton>
+              </TableCell>
+              <TableCell>
                 <SecretCell value={apiKey.keyValue} />
               </TableCell>
               <TableCell>
                 <Typography color="text.secondary" variant="body2">
                   {formatDate(apiKey.createdAt)}
+                </Typography>
+              </TableCell>
+              <TableCell>
+                <Typography
+                  component="span"
+                  sx={{ color: "#27a768", fontSize: "0.8125rem" }}
+                >
+                  Active
                 </Typography>
               </TableCell>
               <TableCell align="right">
@@ -91,10 +113,10 @@ export function ApiKeysTable({
             </TableRow>
           ) : (
             <TableRow>
-              <TableCell colSpan={4} sx={{ borderBottom: "none" }}>
-                <Box sx={{ py: 4, textAlign: "center" }}>
-                  <Typography color="text.secondary">
-                    No API key yet — create one to get started.
+              <TableCell colSpan={6} sx={{ borderBottom: "none" }}>
+                <Box sx={{ py: 4.5, textAlign: "center" }}>
+                  <Typography color="text.primary" variant="body2">
+                    No API key yet - create one to get started
                   </Typography>
                 </Box>
               </TableCell>
