@@ -133,6 +133,9 @@ export function Dashboard() {
 
   const actionDisabled =
     loading || creating || deleting || (Boolean(apiKey) && !apiKey?.expired);
+  const createButtonLabel = apiKey?.expired
+    ? "Generate New Key"
+    : "Create New Key";
 
   return (
     <Box
@@ -172,7 +175,7 @@ export function Dashboard() {
                 px: 2.5,
               }}
             >
-              {creating ? "Creating..." : "Create New Key"}
+              {creating ? "Creating..." : createButtonLabel}
             </Button>
           </Stack>
 
