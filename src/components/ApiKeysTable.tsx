@@ -19,6 +19,8 @@ type ApiKeyRow = {
   name?: string;
   keyValue: string;
   createdAt: string;
+  expiresAt: string;
+  expired: boolean;
 };
 
 type ApiKeysTableProps = {
@@ -94,9 +96,12 @@ export function ApiKeysTable({
               <TableCell>
                 <Typography
                   component="span"
-                  sx={{ color: "#27a768", fontSize: "0.8125rem" }}
+                  sx={{
+                    color: apiKey.expired ? "error.main" : "#27a768",
+                    fontSize: "0.8125rem",
+                  }}
                 >
-                  Active
+                  {apiKey.expired ? "Expired" : "Active"}
                 </Typography>
               </TableCell>
               <TableCell align="right">

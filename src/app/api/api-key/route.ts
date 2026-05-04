@@ -1,21 +1,9 @@
 import { auth } from "@clerk/nextjs/server";
-import { eq } from "drizzle-orm";
-import { db } from "@/db";
-import { apiKeys } from "@/db/schema";
-import { generateApiKey } from "@/lib/api-keys";
-
-async function getCurrentApiKey(userId: string) {
-  const [apiKey] = await db
-    .select({
-      keyValue: apiKeys.keyValue,
-      createdAt: apiKeys.createdAt,
-    })
-    .from(apiKeys)
-    .where(eq(apiKeys.clerkUserId, userId))
-    .limit(1);
-
-  return apiKey ?? null;
-}
+import {
+  createApiKeyForUser,
+  deleteApiKeyForUser,
+  getApiKeyForUser,
+} from "@/lib/api-keys";
 
 export async function GET() {
   const { userId } = await auth();
@@ -24,7 +12,7 @@ export async function GET() {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  return Response.json({ apiKey: await getCurrentApiKey(userId) });
+  return Response.json({ apiKey: await getApiKeyForUser(userId) });
 }
 
 export async function POST() {
@@ -34,24 +22,26 @@ export async function POST() {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  try {
-    const [createdKey] = await db
-      .insert(apiKeys)
-      .values({
-        clerkUserId: userId,
-        keyValue: generateApiKey(),
-      })
-      .returning({
-        keyValue: apiKeys.keyValue,
-        createdAt: apiKeys.createdAt,
-      });
+  const existingKey = await getApiKeyForUser(userId);
 
-    return Response.json({ apiKey: createdKey }, { status: 201 });
-  } catch {
-    const existingKey = await getCurrentApiKey(userId);
-
-    if (existingKey) {
+  if (existingKey) {
+    if (Date.now() < existingKey.expiresAt.getTime()) {
       return Response.json({ apiKey: existingKey });
+    }
+
+    await deleteApiKeyForUser(userId);
+  }
+
+  try {
+    return Response.json(
+      { apiKey: await createApiKeyForUser(userId) },
+      { status: 201 },
+    );
+  } catch {
+    const currentKey = await getApiKeyForUser(userId);
+
+    if (currentKey) {
+      return Response.json({ apiKey: currentKey });
     }
 
     return Response.json(
@@ -68,7 +58,7 @@ export async function DELETE() {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  await db.delete(apiKeys).where(eq(apiKeys.clerkUserId, userId));
+  await deleteApiKeyForUser(userId);
 
   return Response.json({ deleted: true });
 }

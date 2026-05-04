@@ -3,9 +3,9 @@ export function maskSecret(value: string, visibleSuffix = 4): string {
 
   const suffix = value.slice(-visibleSuffix);
 
-  const lastUnderscore = value.lastIndexOf("_");
-  if (lastUnderscore > -1 && lastUnderscore < value.length - visibleSuffix) {
-    const prefix = value.slice(0, lastUnderscore + 1);
+  const prefixEnd = value.indexOf("_", value.indexOf("_") + 1) + 1;
+  if (prefixEnd > 0 && prefixEnd < value.length - visibleSuffix) {
+    const prefix = value.slice(0, prefixEnd);
     const dots = "\u2022".repeat(value.length - prefix.length - suffix.length);
 
     return `${prefix}${dots}${suffix}`;

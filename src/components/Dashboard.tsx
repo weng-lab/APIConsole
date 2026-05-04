@@ -17,7 +17,18 @@ type ApiKey = {
   name?: string;
   keyValue: string;
   createdAt: string;
+  expiresAt: string;
+  expired: boolean;
 };
+
+type ApiKeyResponse = Omit<ApiKey, "expired">;
+
+function withApiKeyStatus(apiKey: ApiKeyResponse): ApiKey {
+  return {
+    ...apiKey,
+    expired: Date.now() >= new Date(apiKey.expiresAt).getTime(),
+  };
+}
 
 export function Dashboard() {
   const [apiKey, setApiKey] = useState<ApiKey | null>(null);
@@ -39,8 +50,8 @@ export function Dashboard() {
           return;
         }
 
-        const data: { apiKey: ApiKey | null } = await response.json();
-        setApiKey(data.apiKey);
+        const data: { apiKey: ApiKeyResponse | null } = await response.json();
+        setApiKey(data.apiKey ? withApiKeyStatus(data.apiKey) : null);
       } catch {
         setError("Could not load your API key.");
       } finally {
@@ -63,8 +74,8 @@ export function Dashboard() {
         return;
       }
 
-      const data: { apiKey: ApiKey } = await response.json();
-      setApiKey(data.apiKey);
+      const data: { apiKey: ApiKeyResponse } = await response.json();
+      setApiKey(withApiKeyStatus(data.apiKey));
     } catch {
       setError("Could not create your API key.");
     } finally {
@@ -92,7 +103,8 @@ export function Dashboard() {
     }
   }
 
-  const actionDisabled = loading || creating || deleting || Boolean(apiKey);
+  const actionDisabled =
+    loading || creating || deleting || (Boolean(apiKey) && !apiKey?.expired);
 
   return (
     <Box
