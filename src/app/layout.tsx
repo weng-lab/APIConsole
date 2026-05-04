@@ -10,11 +10,20 @@ export const metadata: Metadata = {
   description: "Create and manage your API key.",
 };
 
+const clerkLocalization = {
+  signIn: {
+    start: {
+      title: "API Console",
+      subtitle: "Sign in or create an account to manage your API keys.",
+    },
+  },
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <ClerkProvider>
+    <ClerkProvider localization={clerkLocalization}>
       <html lang="en">
         <body>
           <Providers>

@@ -28,14 +28,12 @@ export function AppHeader() {
             >
               API Console
             </Typography>
-            {pathname === "/" ? (
-              <Typography
-                component="span"
-                sx={{ color: "#a8a8a8", fontSize: "0.6875rem" }}
-              >
-                Weng · Moore Lab
-              </Typography>
-            ) : null}
+            <Typography
+              component="span"
+              sx={{ color: "#a8a8a8", fontSize: "0.6875rem" }}
+            >
+              Weng · Moore Lab
+            </Typography>
           </Stack>
         </Box>
 
