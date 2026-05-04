@@ -6,6 +6,11 @@ import { AppBar, Box, Button, Stack, Toolbar, Typography } from "@mui/material";
 import { usePathname } from "next/navigation";
 import { AccountMenu } from "@/components/AccountMenu";
 
+const navItems = [
+  { href: "/dashboard", label: "Dashboard" },
+  { href: "/docs", label: "Docs" },
+];
+
 export function AppHeader() {
   const pathname = usePathname();
 
@@ -30,7 +35,11 @@ export function AppHeader() {
             </Typography>
             <Typography
               component="span"
-              sx={{ color: "#a8a8a8", fontSize: "0.6875rem" }}
+              sx={{
+                color: "#a8a8a8",
+                display: { xs: "none", md: "inline" },
+                fontSize: "0.6875rem",
+              }}
             >
               Weng · Moore Lab
             </Typography>
@@ -38,6 +47,38 @@ export function AppHeader() {
         </Box>
 
         <Show when="signed-in">
+          <Stack
+            component="nav"
+            direction="row"
+            spacing={0.5}
+            sx={{ display: "flex" }}
+          >
+            {navItems.map(({ href, label }) => {
+              const active = pathname === href || pathname.startsWith(`${href}/`);
+
+              return (
+                <Button
+                  color="inherit"
+                  component={Link}
+                  href={href}
+                  key={href}
+                  sx={{
+                    bgcolor: active ? "rgba(255, 255, 255, 0.16)" : "transparent",
+                    color: active ? "#ffffff" : "#d8d8d8",
+                    minWidth: 0,
+                    px: { xs: 1, sm: 1.5 },
+                    "&:hover": {
+                      bgcolor: "rgba(255, 255, 255, 0.12)",
+                      color: "#ffffff",
+                    },
+                  }}
+                  variant="text"
+                >
+                  {label}
+                </Button>
+              );
+            })}
+          </Stack>
           <AccountMenu />
         </Show>
         {pathname === "/" ? null : (
