@@ -33,9 +33,6 @@ curl 'https://screen.api.wenglab.org/graphql' \
 
 Replace `<token>` with the API key from your dashboard.
 
-> Treat API keys like passwords. Do not commit them to source control, share them
-> publicly, or expose them in client-side code.
-
 ## Using your API key in Apollo Explorer
 
 To explore this GraphQL service, you can use the [Apollo Explorer](https://studio.apollographql.com/sandbox/explorer), which provides a nice UI to make queries and view documentation.

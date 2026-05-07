@@ -12,10 +12,6 @@ is a good introduction.
 
 ## Getting started
 
-<span style="color:red;">
-**NOTE: We are working on adding authentication to [`https://screen.api.wenglab.org/graphql`](https://screen.api.wenglab.org/graphql). Hence it's currently unavailable for public access. It will be available as soon as possible. Meanwhile, please feel free to [contact us](https://screen.wenglab.org/about#contact-us) if you want to access any SCREEN data.**
-</span>
-
 The host url for the API is [`https://screen.api.wenglab.org/graphql`](https://screen.api.wenglab.org/graphql).
 
 ### Playground
