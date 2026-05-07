@@ -28,7 +28,7 @@ function withExpiration(apiKey: Omit<ApiKeyRecord, "expiresAt">): ApiKeyRecord {
 }
 
 export function generateApiKey() {
-  return `ac_test_${randomBytes(24).toString("base64url")}`;
+  return `api_sk_${randomBytes(24).toString("base64url")}`;
 }
 
 export async function getApiKeyForUser(clerkUserId: string) {
