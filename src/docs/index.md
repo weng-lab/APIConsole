@@ -1,6 +1,6 @@
 # SCREEN GraphQL API
 
-The GraphQL API is the main way to programatically access SCREEN data and metadata.
+The GraphQL API is the main way to programmatically access SCREEN data and metadata.
 
 ## GraphQL
 
@@ -37,26 +37,27 @@ a `cURL` call, and a button to share the current queries.
 
 ### Programmatic Access
 
-In addition, the API can be accessed programatically.
-[Many libraries](https://github.com/chentsulin/awesome-graphql) exists for
+In addition, the API can be accessed programmatically.
+[Many libraries](https://github.com/chentsulin/awesome-graphql) exist for
 several languages in order to interface with GraphQL APIs. In this guide, we'll
-briefly cover only three common, simple cases:
+briefly cover only four common, simple cases:
 
-  * [Command-line with `cURL`](getting_started/command_line.md)
-  * [Python with `requests`](getting_started/python.md)
-  * [Javascript with `grapqhl-request`](getting_started/javascript.md)
+- [Authentication](getting_started/auth.md)
+- [Command-line with `cURL`](getting_started/command_line.md)
+- [Python with `requests`](getting_started/python.md)
+- [JavaScript with `graphql-request`](getting_started/javascript.md)
 
 ## What is this guide?
 
 This guide is intended to be a quick introduction to some of the various types
 of data available in the SCREEN API. There will be several example queries, as
 well as a quick exercise at the end of each section for interactivity. These may
-require you to search through the documentation using the playground. 
+require you to search through the documentation using the playground.
 
-## Composabiliy
+## Composability
 
 The API is designed in a fashion that data is composable. For example, you can
 query for nearby genes for a cCRE, and in the same request, also get the gene(s)
 expression and intersecting SNPs. However, in some cases, we may return an error
-if the respose would be too large or too performance-intenstive. In this case,
+if the response would be too large or too performance-intensive. In this case,
 you can split your query into parts.

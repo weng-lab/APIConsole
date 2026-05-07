@@ -30,6 +30,12 @@ export const docsSections: DocSection[] = [
     title: "Getting Started",
     items: [
       {
+        filePath: "getting_started/auth.md",
+        href: "/docs/getting-started/auth",
+        slug: ["getting-started", "auth"],
+        title: "Authentication",
+      },
+      {
         filePath: "getting_started/command_line.md",
         href: "/docs/getting-started/command-line",
         slug: ["getting-started", "command-line"],
