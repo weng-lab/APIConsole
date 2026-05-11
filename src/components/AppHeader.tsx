@@ -81,9 +81,9 @@ export function AppHeader() {
           </Stack>
           <AccountMenu />
         </Show>
-        {pathname === "/" ? null : (
+        {pathname === "/login" ? null : (
           <Show when="signed-out">
-            <Button component={Link} href="/" variant="text" color="inherit">
+            <Button component={Link} href="/login" variant="text" color="inherit">
               Sign in
             </Button>
           </Show>

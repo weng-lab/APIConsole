@@ -7,7 +7,7 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: "API Console",
-  description: "Create and manage your API key.",
+  description: "Generate and manage API keys for the SCREEN API.",
 };
 
 const clerkLocalization = {
