@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Analytics } from "@vercel/analytics/next";
 import { Box } from "@mui/material";
 import { AppHeader } from "@/components/AppHeader";
 import { Providers } from "./providers";
@@ -37,6 +38,7 @@ export default function RootLayout({
               <AppHeader />
               {children}
             </Box>
+            <Analytics />
           </Providers>
         </body>
       </html>

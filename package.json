@@ -23,6 +23,7 @@
     "@mui/material": "latest",
     "@mui/material-nextjs": "latest",
     "@neondatabase/serverless": "latest",
+    "@vercel/analytics": "^2.0.1",
     "drizzle-orm": "latest",
     "next": "latest",
     "react": "latest",
