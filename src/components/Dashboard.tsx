@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import AddOutlined from "@mui/icons-material/AddOutlined";
 import { ApiKeysTable } from "@/components/ApiKeysTable";
+import { OnboardingSurveyDialog } from "@/components/OnboardingSurveyDialog";
 
 type ApiKey = {
   name?: string;
@@ -33,6 +34,8 @@ function withApiKeyStatus(apiKey: ApiKeyResponse): ApiKey {
 export function Dashboard() {
   const [apiKey, setApiKey] = useState<ApiKey | null>(null);
   const [loading, setLoading] = useState(false);
+  const [surveyLoading, setSurveyLoading] = useState(false);
+  const [surveyRequired, setSurveyRequired] = useState(false);
   const [creating, setCreating] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [renaming, setRenaming] = useState(false);
@@ -61,6 +64,30 @@ export function Dashboard() {
     }
 
     loadApiKey();
+  }, []);
+
+  useEffect(() => {
+    async function loadSurveyResponse() {
+      setSurveyLoading(true);
+
+      try {
+        const response = await fetch("/api/survey-response");
+
+        if (!response.ok) {
+          setSurveyRequired(true);
+          return;
+        }
+
+        const data: { surveyResponse: unknown | null } = await response.json();
+        setSurveyRequired(!data.surveyResponse);
+      } catch {
+        setSurveyRequired(true);
+      } finally {
+        setSurveyLoading(false);
+      }
+    }
+
+    loadSurveyResponse();
   }, []);
 
   async function createApiKey() {
@@ -132,7 +159,12 @@ export function Dashboard() {
   }
 
   const actionDisabled =
-    loading || creating || deleting || (Boolean(apiKey) && !apiKey?.expired);
+    loading ||
+    surveyLoading ||
+    surveyRequired ||
+    creating ||
+    deleting ||
+    (Boolean(apiKey) && !apiKey?.expired);
   const createButtonLabel = apiKey?.expired
     ? "Generate New Key"
     : "Create New Key";
@@ -142,6 +174,11 @@ export function Dashboard() {
       component="main"
       sx={{ flex: 1, pb: { xs: 7, md: 12 }, pt: { xs: 5, md: 8 } }}
     >
+      <OnboardingSurveyDialog
+        open={surveyRequired}
+        onComplete={() => setSurveyRequired(false)}
+      />
+
       <Container maxWidth="lg" sx={{ maxWidth: { lg: 1120 } }}>
         <Stack spacing={2.5}>
           <Stack
