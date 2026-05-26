@@ -8,7 +8,9 @@ type DocsPageProps = {
   params: Promise<{ slug?: string[] }>;
 };
 
-export async function generateMetadata({ params }: DocsPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: DocsPageProps): Promise<Metadata> {
   const { slug } = await params;
   const doc = getDocBySlug(slug);
 
@@ -20,7 +22,8 @@ export async function generateMetadata({ params }: DocsPageProps): Promise<Metad
 
   return {
     title: `${doc.title} | API Console Docs`,
-    description: "Authenticated documentation for using the SCREEN GraphQL API.",
+    description:
+      "Authenticated documentation for using the SCREEN GraphQL API.",
   };
 }
 

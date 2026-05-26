@@ -107,14 +107,19 @@ export const docsSections: DocSection[] = [
 export const docsPages = docsSections.flatMap((section) => section.items);
 
 export function getDocBySlug(slug: string[] = []) {
-  return docsPages.find((page) => page.slug.join("/") === slug.join("/")) ?? null;
+  return (
+    docsPages.find((page) => page.slug.join("/") === slug.join("/")) ?? null
+  );
 }
 
 function isExternalHref(href: string) {
   return /^[a-z][a-z0-9+.-]*:/i.test(href) || href.startsWith("//");
 }
 
-export function getDocHrefForMarkdownPath(href: string, currentFilePath: string) {
+export function getDocHrefForMarkdownPath(
+  href: string,
+  currentFilePath: string,
+) {
   if (href.startsWith("#") || isExternalHref(href)) {
     return href;
   }
@@ -127,7 +132,10 @@ export function getDocHrefForMarkdownPath(href: string, currentFilePath: string)
 
   const currentDirectory = path.posix.dirname(currentFilePath);
   const normalizedHref = path.posix.normalize(
-    path.posix.join(currentDirectory === "." ? "" : currentDirectory, hrefWithoutHash),
+    path.posix.join(
+      currentDirectory === "." ? "" : currentDirectory,
+      hrefWithoutHash,
+    ),
   );
   const page = docsPages.find((doc) => doc.filePath === normalizedHref);
 

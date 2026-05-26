@@ -70,7 +70,9 @@ export function DocsLayout({ activeHref, children, title }: DocsLayoutProps) {
                               sx={{
                                 bgcolor: active ? "#eeeeee" : "transparent",
                                 borderRadius: 1,
-                                color: active ? "text.primary" : "text.secondary",
+                                color: active
+                                  ? "text.primary"
+                                  : "text.secondary",
                                 display: "block",
                                 fontSize: "0.8125rem",
                                 fontWeight: active ? 600 : 400,
@@ -93,7 +95,14 @@ export function DocsLayout({ activeHref, children, title }: DocsLayoutProps) {
                 </Stack>
               </Paper>
 
-              <Paper sx={{ borderRadius: 1, flex: 1, minWidth: 0, overflow: "hidden" }}>
+              <Paper
+                sx={{
+                  borderRadius: 1,
+                  flex: 1,
+                  minWidth: 0,
+                  overflow: "hidden",
+                }}
+              >
                 <Box
                   sx={{
                     borderBottom: "1px solid #dfdfdf",

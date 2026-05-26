@@ -25,7 +25,9 @@ export async function GET(_: Request, { params }: ImageRouteProps) {
   }
 
   try {
-    const image = await readFile(path.join(process.cwd(), "src/docs/img", filename));
+    const image = await readFile(
+      path.join(process.cwd(), "src/docs/img", filename),
+    );
 
     return new Response(image, {
       headers: {

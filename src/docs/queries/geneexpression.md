@@ -5,7 +5,7 @@
 Returns gene id data for the OR51B4 gene.
 
 ```graphql
-query  {
+query {
   gene(assembly: "grch38", name: ["OR51B4"]) {
     name
     id
@@ -13,9 +13,7 @@ query  {
       start
       chromosome
       end
-      
     }
-    
   }
 }
 ```
@@ -35,10 +33,11 @@ query {
       accession
       quantifications(gene_id_prefix: "ENSG00000183251") {
         tpm
-        file_accession             
-      }      
-    }    
+        file_accession
+      }
+    }
   }
 }
 ```
+
 <br />

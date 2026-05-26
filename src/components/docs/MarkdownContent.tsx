@@ -3,7 +3,11 @@ import ReactMarkdown from "react-markdown";
 import rehypeRaw from "rehype-raw";
 import remarkGfm from "remark-gfm";
 import { CodeBlock } from "@/components/docs/CodeBlock";
-import { getDocHrefForMarkdownPath, getDocImageSrc, getHeadingId } from "@/lib/docs";
+import {
+  getDocHrefForMarkdownPath,
+  getDocImageSrc,
+  getHeadingId,
+} from "@/lib/docs";
 
 type MarkdownContentProps = {
   currentFilePath: string;
@@ -18,7 +22,10 @@ function normalizeImageSrc(src: unknown, currentFilePath: string) {
   return getDocImageSrc(src, currentFilePath);
 }
 
-export function MarkdownContent({ currentFilePath, markdown }: MarkdownContentProps) {
+export function MarkdownContent({
+  currentFilePath,
+  markdown,
+}: MarkdownContentProps) {
   return (
     <Box
       className="markdown-body"
@@ -92,11 +99,14 @@ export function MarkdownContent({ currentFilePath, markdown }: MarkdownContentPr
       <ReactMarkdown
         components={{
           a: ({ children, href }) => {
-            const isExternal = href?.startsWith("http://") || href?.startsWith("https://");
+            const isExternal =
+              href?.startsWith("http://") || href?.startsWith("https://");
 
             return (
               <a
-                href={href ? getDocHrefForMarkdownPath(href, currentFilePath) : href}
+                href={
+                  href ? getDocHrefForMarkdownPath(href, currentFilePath) : href
+                }
                 rel={isExternal ? "noopener noreferrer" : undefined}
                 target={isExternal ? "_blank" : undefined}
               >

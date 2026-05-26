@@ -7,9 +7,8 @@
 Returns RAMPAGE data for the OR51B4 gene.
 
 ```graphql
-  query  {
-  tssrampageQuery(genename: "OR51B4"
-) {
+query {
+  tssrampageQuery(genename: "OR51B4") {
     start
     geneName
     organ
@@ -18,13 +17,14 @@ Returns RAMPAGE data for the OR51B4 gene.
     peakId
     biosampleName
     biosampleType
-    biosampleSummary   
+    biosampleSummary
     expAccession
     value
     start
-    end 
-    chrom 
+    end
+    chrom
   }
 }
 ```
+
 <br />

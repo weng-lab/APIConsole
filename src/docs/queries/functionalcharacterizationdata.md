@@ -2,11 +2,14 @@
 
 ## Query VISTA enhancer regions
 
-Returns VISTA enhancer regions with tissues,result and element id 
+Returns VISTA enhancer regions with tissues,result and element id
 
 ```graphql
-query  {
-  functionalCharacterizationQuery(assembly: "grch38", coordinates:  { chromosome: "chr11", start: 5291251, end: 5291587 }) {
+query {
+  functionalCharacterizationQuery(
+    assembly: "grch38"
+    coordinates: { chromosome: "chr11", start: 5291251, end: 5291587 }
+  ) {
     tissues
     element_id
     assay_result
@@ -23,11 +26,9 @@ Returns MPRA regions for given genomic region.
 
 ```graphql
 query {
-  mpraFccQuery(coordinates: {  
-    chromosome: "chr11",
-    start: 5291251,
-    end: 5291587  
-}) {
+  mpraFccQuery(
+    coordinates: { chromosome: "chr11", start: 5291251, end: 5291587 }
+  ) {
     celltype
     chromosome
     stop
@@ -38,15 +39,12 @@ query {
     strand
     log2fc
     experiment
-    barcode_location    
+    barcode_location
   }
 }
-
 ```
 
-
 ## Get STARR-seq CAPRA Quantification (solo and double fragments)
-
 
 Returns STARR-seq CAPRA Quantification (solo fragments) for a single cCRE.
 
@@ -61,16 +59,15 @@ query {
     rna_rep2
     rna_rep3
     pvalue
-    experiment    
+    experiment
   }
 }
-
 ```
 
 Returns STARR-seq CAPRA Quantification (double fragments) for a single cCRE.
 
 ```graphql
-query  {
+query {
   capraFccDoubleQuery(accession: ["EH38E2941922"]) {
     rdhs_p1
     rdhs_p2
@@ -81,7 +78,7 @@ query  {
     rna_rep2
     rna_rep3
     pvalue
-    experiment    
+    experiment
   }
 }
 ```

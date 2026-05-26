@@ -54,7 +54,8 @@ export function AppHeader() {
             sx={{ display: "flex" }}
           >
             {navItems.map(({ href, label }) => {
-              const active = pathname === href || pathname.startsWith(`${href}/`);
+              const active =
+                pathname === href || pathname.startsWith(`${href}/`);
 
               return (
                 <Button
@@ -63,7 +64,9 @@ export function AppHeader() {
                   href={href}
                   key={href}
                   sx={{
-                    bgcolor: active ? "rgba(255, 255, 255, 0.16)" : "transparent",
+                    bgcolor: active
+                      ? "rgba(255, 255, 255, 0.16)"
+                      : "transparent",
                     color: active ? "#ffffff" : "#d8d8d8",
                     minWidth: 0,
                     px: { xs: 1, sm: 1.5 },
@@ -83,7 +86,12 @@ export function AppHeader() {
         </Show>
         {pathname === "/login" ? null : (
           <Show when="signed-out">
-            <Button component={Link} href="/login" variant="text" color="inherit">
+            <Button
+              component={Link}
+              href="/login"
+              variant="text"
+              color="inherit"
+            >
               Sign in
             </Button>
           </Show>
