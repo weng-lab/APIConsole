@@ -1,12 +1,12 @@
 # API-Key Lifecycle
 
-The console manages one API key per Clerk user.
+The console manages one API key per Clerk user through the API Gateway auth API.
 
-Generated API keys are currently managed by this console only. No route in this app uses them to authorize external API traffic; `validateApiKey()` exists for future use but is not wired into the app.
+API-key storage and lifecycle operations are centralized in `api-gateways`. The browser calls `NEXT_PUBLIC_API_GATEWAY_URL/api/api-key` directly with a Clerk bearer token, so APIConsole does not need database access for API-key management.
 
 ## Creation
 
-`POST /api/api-key` is idempotent while the current key is active. If a user already has an active key, the route returns that key instead of creating another.
+`POST /api/api-key` on the API Gateway is idempotent while the current key is active. If a user already has an active key, the route returns that key instead of creating another.
 
 If the existing key is expired, the route deletes it and creates a replacement.
 
@@ -14,7 +14,7 @@ If the existing key is expired, the route deletes it and creates a replacement.
 
 Keys expire 90 days after `created_at`.
 
-There is no `expires_at` database column. Expiration is computed in `src/lib/api-keys.ts`, so expired keys can still exist in the database until the user replaces or deletes them.
+There is no `expires_at` database column. Expiration is computed by the API Gateway auth API, so expired keys can still exist in the database until the user replaces or deletes them.
 
 ## Storage
 
@@ -24,10 +24,6 @@ The masked key in the table is only a UI presentation detail. It is not encrypti
 
 ## Naming And Deletion
 
-`PATCH /api/api-key` renames the current user's key. Names are trimmed, required, and limited to 120 characters.
+`PATCH /api/api-key` on the API Gateway renames the current user's key. Names are trimmed, required, and limited to 120 characters.
 
-`DELETE /api/api-key` hard-deletes the current user's key. There is no revocation or rotation history.
-
-## Validation Helper
-
-`validateApiKey()` returns whether a key exists and whether it is expired. It is available for future API-key authentication work.
+`DELETE /api/api-key` on the API Gateway hard-deletes the current user's key. There is no revocation or rotation history.

@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useAuth } from "@clerk/nextjs";
 import {
   Alert,
   Box,
@@ -24,6 +25,8 @@ type ApiKey = {
 
 type ApiKeyResponse = Omit<ApiKey, "expired">;
 
+const apiGatewayUrl = process.env.NEXT_PUBLIC_API_GATEWAY_URL?.replace(/\/$/, "");
+
 function withApiKeyStatus(apiKey: ApiKeyResponse): ApiKey {
   return {
     ...apiKey,
@@ -32,6 +35,7 @@ function withApiKeyStatus(apiKey: ApiKeyResponse): ApiKey {
 }
 
 export function Dashboard() {
+  const { getToken } = useAuth();
   const [apiKey, setApiKey] = useState<ApiKey | null>(null);
   const [loading, setLoading] = useState(false);
   const [surveyLoading, setSurveyLoading] = useState(false);
@@ -41,13 +45,33 @@ export function Dashboard() {
   const [renaming, setRenaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  async function fetchAuthApi(path: string, init?: RequestInit) {
+    if (!apiGatewayUrl) {
+      throw new Error("NEXT_PUBLIC_API_GATEWAY_URL is required");
+    }
+
+    const token = await getToken();
+
+    if (!token) {
+      throw new Error("Clerk token is required");
+    }
+
+    return fetch(`${apiGatewayUrl}${path}`, {
+      ...init,
+      headers: {
+        Authorization: `Bearer ${token}`,
+        ...init?.headers,
+      },
+    });
+  }
+
   useEffect(() => {
     async function loadApiKey() {
       setLoading(true);
       setError(null);
 
       try {
-        const response = await fetch("/api/api-key");
+        const response = await fetchAuthApi("/api/api-key");
 
         if (!response.ok) {
           setError("Could not load your API key.");
@@ -64,7 +88,7 @@ export function Dashboard() {
     }
 
     loadApiKey();
-  }, []);
+  }, [getToken]);
 
   useEffect(() => {
     async function loadSurveyResponse() {
@@ -95,7 +119,7 @@ export function Dashboard() {
     setError(null);
 
     try {
-      const response = await fetch("/api/api-key", { method: "POST" });
+      const response = await fetchAuthApi("/api/api-key", { method: "POST" });
 
       if (!response.ok) {
         setError("Could not create your API key.");
@@ -116,7 +140,7 @@ export function Dashboard() {
     setError(null);
 
     try {
-      const response = await fetch("/api/api-key", { method: "DELETE" });
+      const response = await fetchAuthApi("/api/api-key", { method: "DELETE" });
 
       if (!response.ok) {
         setError("Could not delete your API key.");
@@ -136,7 +160,7 @@ export function Dashboard() {
     setError(null);
 
     try {
-      const response = await fetch("/api/api-key", {
+      const response = await fetchAuthApi("/api/api-key", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name }),
