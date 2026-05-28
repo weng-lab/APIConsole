@@ -146,8 +146,8 @@ export function AccountMenu() {
         <DialogContent>
           <Stack spacing={2} sx={{ pt: 1 }}>
             <Typography color="text.secondary">
-              This permanently deletes your account and removes the API key
-              associated with it. This action cannot be undone.
+              This permanently deletes your account and removes its API keys.
+              This action cannot be undone.
             </Typography>
             {deleteAccountError ? (
               <Alert severity="error">{deleteAccountError}</Alert>

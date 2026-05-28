@@ -1,14 +1,14 @@
 # API Console
 
-API Console is a Next.js app for Clerk-authenticated users to create and manage one API key stored in Neon Postgres. It also hosts authenticated Markdown documentation for the SCREEN GraphQL API.
+API Console is a Next.js app for Clerk-authenticated users to create and manage API keys through `auth-service`. It also hosts authenticated Markdown documentation for the SCREEN GraphQL API.
 
-Generated API keys are currently managed by this console only. No route in this app uses them to authorize external API traffic; `validateApiKey()` exists for future use but is not wired into the app.
+Generated API keys are owned by `auth-service`. This app proxies key management requests to `AUTH_SERVICE_URL` with the user's Clerk session token.
 
 ## What It Does
 
 - Provides Clerk sign-in and sign-up at `/`.
 - Redirects signed-in users to `/dashboard`.
-- Lets each user create, reveal, copy, rename, and delete one API key.
+- Lets each user create, reveal, copy, rename, and delete up to 5 API keys.
 - Serves protected docs under `/docs`.
 
 ## Stack
@@ -38,12 +38,12 @@ cp .env.example .env.local
 3. Fill in `.env.local`:
 
 ```env
-DATABASE_URL="postgresql://user:password@host/database?sslmode=require"
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=""
 CLERK_SECRET_KEY=""
+AUTH_SERVICE_URL="http://localhost:3001"
 ```
 
-Create a Clerk app for the publishable and secret keys, provision a Neon Postgres database for `DATABASE_URL`, and keep those values in `.env.local`. Drizzle commands read `.env.local` directly.
+Create a Clerk app for the publishable and secret keys, run `auth-service`, and set `AUTH_SERVICE_URL` to its base URL. For local development, run APIConsole on `http://localhost:3000`, run `auth-service` on `http://localhost:3001`, and set the auth-service `CLERK_AUTHORIZED_PARTIES` to include `http://localhost:3000`. Keep those values in `.env.local`. Drizzle commands still read `.env.local` directly for the remaining local database-backed features.
 
 4. Apply database migrations:
 
@@ -59,9 +59,9 @@ pnpm dev
 
 ## API Keys
 
-Each Clerk user can have one API key. Active keys are reused when `POST /api/api-key` is called; expired keys are deleted and replaced.
+Each Clerk user can have up to 5 API keys. The console calls `auth-service` for listing, creation, rename, and deletion.
 
-Keys expire 90 days after `created_at`, but the expiration date is computed in application code and is not stored in the database. Keys are currently stored as plaintext so users can reveal them later in the console. Hashing, encryption, revocation, and rotation history are not implemented yet.
+Keys expire 90 days after creation. Keys are currently stored as plaintext by `auth-service` so users can reveal them later in the console. Hashing, encryption, revocation, and rotation history are not implemented yet.
 
 ## Maintainer Notes
 

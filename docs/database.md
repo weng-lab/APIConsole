@@ -1,10 +1,10 @@
 # Database And Migrations
 
-This project uses Neon Postgres for API-key storage and Drizzle for schema and migrations.
+This project uses Drizzle for the remaining local database-backed features. API-key storage has moved to `auth-service`.
 
 ## API Key Table
 
-The `api_keys` table contains:
+Historical migrations in this repository include an `api_keys` table:
 
 - `id` - UUID primary key.
 - `clerk_user_id` - Clerk user ID, unique per row.
@@ -12,7 +12,9 @@ The `api_keys` table contains:
 - `key_value` - plaintext API key value, globally unique.
 - `created_at` - timestamp used to compute expiration.
 
-The unique index on `clerk_user_id` is important: the application expects one API key per Clerk user.
+The console no longer reads or writes this table for API-key CRUD. `auth-service` owns key storage and supports up to 5 keys per Clerk user.
+
+`drizzle/0003_fresh_speed_demon.sql` removes the old one-key-per-user index if APIConsole migrations are still applied to an existing shared database.
 
 ## Drizzle
 

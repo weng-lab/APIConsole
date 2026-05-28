@@ -1,6 +1,10 @@
 import { auth } from "@clerk/nextjs/server";
 import { callAuthService, proxyAuthServiceResponse } from "@/lib/auth-service";
 
+type RouteContext = {
+  params: Promise<{ id: string }>;
+};
+
 async function getClerkToken() {
   const { userId, getToken } = await auth();
 
@@ -11,26 +15,7 @@ async function getClerkToken() {
   return getToken();
 }
 
-export async function GET() {
-  const token = await getClerkToken();
-
-  if (!token) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  try {
-    const response = await callAuthService("survey-response", { token });
-
-    return proxyAuthServiceResponse(response);
-  } catch {
-    return Response.json(
-      { error: "Could not reach auth service" },
-      { status: 502 },
-    );
-  }
-}
-
-export async function POST(request: Request) {
+export async function PATCH(request: Request, context: RouteContext) {
   const token = await getClerkToken();
 
   if (!token) {
@@ -46,9 +31,33 @@ export async function POST(request: Request) {
   }
 
   try {
-    const response = await callAuthService("survey-response", {
+    const { id } = await context.params;
+    const response = await callAuthService(`api-key/${id}`, {
       body,
-      method: "POST",
+      method: "PATCH",
+      token,
+    });
+
+    return proxyAuthServiceResponse(response);
+  } catch {
+    return Response.json(
+      { error: "Could not reach auth service" },
+      { status: 502 },
+    );
+  }
+}
+
+export async function DELETE(_request: Request, context: RouteContext) {
+  const token = await getClerkToken();
+
+  if (!token) {
+    return Response.json({ error: "Unauthorized" }, { status: 401 });
+  }
+
+  try {
+    const { id } = await context.params;
+    const response = await callAuthService(`api-key/${id}`, {
+      method: "DELETE",
       token,
     });
 

@@ -27,6 +27,7 @@ import { formatDate } from "@/lib/format";
 const MAX_API_KEY_NAME_LENGTH = 120;
 
 type ApiKeyRow = {
+  id: string;
   name?: string;
   keyValue: string;
   createdAt: string;
@@ -35,16 +36,16 @@ type ApiKeyRow = {
 };
 
 type ApiKeysTableProps = {
-  apiKey: ApiKeyRow | null;
+  apiKeys: ApiKeyRow[];
   loading?: boolean;
   deleting?: boolean;
   renaming?: boolean;
-  onDelete?: () => void;
-  onRename?: (name: string) => Promise<boolean>;
+  onDelete?: (id: string) => void;
+  onRename?: (id: string, name: string) => Promise<boolean>;
 };
 
 export function ApiKeysTable({
-  apiKey,
+  apiKeys,
   loading = false,
   deleting = false,
   renaming = false,
@@ -54,8 +55,9 @@ export function ApiKeysTable({
   const [renameDialogOpen, setRenameDialogOpen] = useState(false);
   const [draftName, setDraftName] = useState("");
   const [renameError, setRenameError] = useState<string | null>(null);
+  const [selectedKey, setSelectedKey] = useState<ApiKeyRow | null>(null);
 
-  const currentName = apiKey?.name ?? "Default";
+  const currentName = selectedKey?.name ?? "Default";
   const trimmedName = draftName.trim();
   const nameTooLong = trimmedName.length > MAX_API_KEY_NAME_LENGTH;
   const canRename =
@@ -65,8 +67,9 @@ export function ApiKeysTable({
     trimmedName !== currentName &&
     !renaming;
 
-  function openRenameDialog() {
-    setDraftName(currentName);
+  function openRenameDialog(apiKey: ApiKeyRow) {
+    setSelectedKey(apiKey);
+    setDraftName(apiKey.name ?? "Default");
     setRenameError(null);
     setRenameDialogOpen(true);
   }
@@ -78,19 +81,21 @@ export function ApiKeysTable({
 
     setRenameDialogOpen(false);
     setRenameError(null);
+    setSelectedKey(null);
   }
 
   async function submitRename() {
-    if (!onRename || !canRename) {
+    if (!onRename || !selectedKey || !canRename) {
       return;
     }
 
     setRenameError(null);
 
-    const renamed = await onRename(trimmedName);
+    const renamed = await onRename(selectedKey.id, trimmedName);
 
     if (renamed) {
       setRenameDialogOpen(false);
+      setSelectedKey(null);
       return;
     }
 
@@ -135,54 +140,56 @@ export function ApiKeysTable({
                   <Skeleton width={32} sx={{ ml: "auto" }} />
                 </TableCell>
               </TableRow>
-            ) : apiKey ? (
-              <TableRow>
-                <TableCell>
-                  <Typography sx={{ fontWeight: 600 }}>
-                    {currentName}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <IconButton
-                    aria-label="Rename API key"
-                    disabled={!onRename || renaming}
-                    onClick={openRenameDialog}
-                    size="small"
-                  >
-                    <EditOutlined fontSize="small" />
-                  </IconButton>
-                </TableCell>
-                <TableCell>
-                  <SecretCell value={apiKey.keyValue} />
-                </TableCell>
-                <TableCell>
-                  <Typography color="text.secondary" variant="body2">
-                    {formatDate(apiKey.createdAt)}
-                  </Typography>
-                </TableCell>
-                <TableCell>
-                  <Typography
-                    component="span"
-                    sx={{
-                      color: apiKey.expired ? "error.main" : "#27a768",
-                      fontSize: "0.8125rem",
-                    }}
-                  >
-                    {apiKey.expired ? "Expired" : "Active"}
-                  </Typography>
-                </TableCell>
-                <TableCell align="right">
-                  <IconButton
-                    aria-label="Delete API key"
-                    color="error"
-                    disabled={deleting}
-                    onClick={onDelete}
-                    size="small"
-                  >
-                    <DeleteOutlined fontSize="small" />
-                  </IconButton>
-                </TableCell>
-              </TableRow>
+            ) : apiKeys.length > 0 ? (
+              apiKeys.map((apiKey) => (
+                <TableRow key={apiKey.id}>
+                  <TableCell>
+                    <Typography sx={{ fontWeight: 600 }}>
+                      {apiKey.name ?? "Default"}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <IconButton
+                      aria-label="Rename API key"
+                      disabled={!onRename || renaming}
+                      onClick={() => openRenameDialog(apiKey)}
+                      size="small"
+                    >
+                      <EditOutlined fontSize="small" />
+                    </IconButton>
+                  </TableCell>
+                  <TableCell>
+                    <SecretCell value={apiKey.keyValue} />
+                  </TableCell>
+                  <TableCell>
+                    <Typography color="text.secondary" variant="body2">
+                      {formatDate(apiKey.createdAt)}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
+                    <Typography
+                      component="span"
+                      sx={{
+                        color: apiKey.expired ? "error.main" : "#27a768",
+                        fontSize: "0.8125rem",
+                      }}
+                    >
+                      {apiKey.expired ? "Expired" : "Active"}
+                    </Typography>
+                  </TableCell>
+                  <TableCell align="right">
+                    <IconButton
+                      aria-label="Delete API key"
+                      color="error"
+                      disabled={deleting}
+                      onClick={() => onDelete?.(apiKey.id)}
+                      size="small"
+                    >
+                      <DeleteOutlined fontSize="small" />
+                    </IconButton>
+                  </TableCell>
+                </TableRow>
+              ))
             ) : (
               <TableRow>
                 <TableCell colSpan={6} sx={{ borderBottom: "none" }}>
