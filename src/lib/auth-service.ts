@@ -21,14 +21,35 @@ function getAuthServiceUrl(path: string) {
     throw new Error("AUTH_SERVICE_URL is not configured");
   }
 
-  return new URL(path, `${baseUrl.replace(/\/$/, "")}/`);
+  const authServiceUrl = new URL(baseUrl);
+  const currentVercelHost = process.env.VERCEL_URL;
+
+  if (authServiceUrl.search || authServiceUrl.hash) {
+    throw new Error(
+      "AUTH_SERVICE_URL must be the auth-service origin without query params or hash fragments",
+    );
+  }
+
+  if (currentVercelHost && authServiceUrl.host === currentVercelHost) {
+    throw new Error("AUTH_SERVICE_URL must not point to this APIConsole app");
+  }
+
+  return new URL(path, `${authServiceUrl.origin}/`);
 }
 
 export async function callAuthService(
   path: string,
   { body, method = "GET", token }: AuthServiceRequestOptions,
 ) {
-  return fetch(getAuthServiceUrl(path), {
+  const url = getAuthServiceUrl(path);
+
+  console.info("calling auth-service", {
+    method,
+    path: url.pathname,
+    upstreamHost: url.host,
+  });
+
+  return fetch(url, {
     body: body === undefined ? undefined : JSON.stringify(body),
     headers: {
       Authorization: `Bearer ${token}`,
