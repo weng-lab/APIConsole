@@ -1,4 +1,5 @@
 import {
+  index,
   jsonb,
   pgTable,
   text,
@@ -19,9 +20,7 @@ export const apiKeys = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (table) => [
-    uniqueIndex("api_keys_clerk_user_id_unique").on(table.clerkUserId),
-  ],
+  (table) => [index("api_keys_clerk_user_id_idx").on(table.clerkUserId)],
 );
 
 export const userSurveyResponses = pgTable(

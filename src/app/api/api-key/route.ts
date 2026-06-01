@@ -1,112 +1,66 @@
 import { auth } from "@clerk/nextjs/server";
-import {
-  createApiKeyForUser,
-  deleteApiKeyForUser,
-  getApiKeyForUser,
-  renameApiKeyForUser,
-} from "@/lib/api-keys";
+import { callAuthService, proxyAuthServiceResponse } from "@/lib/auth-service";
 
-const MAX_API_KEY_NAME_LENGTH = 120;
+async function getClerkToken() {
+  const { userId, getToken } = await auth();
 
-async function getApiKeyName(request: Request) {
-  try {
-    const body: unknown = await request.json();
-
-    if (!body || typeof body !== "object" || !("name" in body)) {
-      return null;
-    }
-
-    const { name } = body as { name: unknown };
-
-    return typeof name === "string" ? name.trim() : null;
-  } catch {
+  if (!userId) {
     return null;
   }
+
+  return getToken();
 }
 
 export async function GET() {
-  const { userId } = await auth();
+  const token = await getClerkToken();
 
-  if (!userId) {
+  if (!token) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  return Response.json({ apiKey: await getApiKeyForUser(userId) });
-}
-
-export async function POST() {
-  const { userId } = await auth();
-
-  if (!userId) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const existingKey = await getApiKeyForUser(userId);
-
-  if (existingKey) {
-    if (Date.now() < existingKey.expiresAt.getTime()) {
-      return Response.json({ apiKey: existingKey });
-    }
-
-    await deleteApiKeyForUser(userId);
   }
 
   try {
-    return Response.json(
-      { apiKey: await createApiKeyForUser(userId) },
-      { status: 201 },
-    );
-  } catch {
-    const currentKey = await getApiKeyForUser(userId);
+    const response = await callAuthService("api-key", { token });
 
-    if (currentKey) {
-      return Response.json({ apiKey: currentKey });
-    }
+    return proxyAuthServiceResponse(response);
+  } catch (error) {
+    console.error("Could not proxy GET /api/api-key to auth-service", error);
 
     return Response.json(
-      { error: "Could not create API key" },
-      { status: 500 },
+      { error: "Could not reach auth service" },
+      { status: 502 },
     );
   }
 }
 
-export async function DELETE() {
-  const { userId } = await auth();
+export async function POST(request: Request) {
+  const token = await getClerkToken();
 
-  if (!userId) {
+  if (!token) {
     return Response.json({ error: "Unauthorized" }, { status: 401 });
   }
 
-  await deleteApiKeyForUser(userId);
+  let body: unknown;
 
-  return Response.json({ deleted: true });
-}
-
-export async function PATCH(request: Request) {
-  const { userId } = await auth();
-
-  if (!userId) {
-    return Response.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
-  const name = await getApiKeyName(request);
-
-  if (!name || name.length > MAX_API_KEY_NAME_LENGTH) {
-    return Response.json({ error: "Invalid API key name" }, { status: 400 });
+  try {
+    body = await request.json();
+  } catch {
+    body = undefined;
   }
 
   try {
-    const apiKey = await renameApiKeyForUser(userId, name);
+    const response = await callAuthService("api-key", {
+      body,
+      method: "POST",
+      token,
+    });
 
-    if (!apiKey) {
-      return Response.json({ error: "API key not found" }, { status: 404 });
-    }
+    return proxyAuthServiceResponse(response);
+  } catch (error) {
+    console.error("Could not proxy POST /api/api-key to auth-service", error);
 
-    return Response.json({ apiKey });
-  } catch {
     return Response.json(
-      { error: "Could not rename API key" },
-      { status: 500 },
+      { error: "Could not reach auth service" },
+      { status: 502 },
     );
   }
 }

@@ -15,6 +15,8 @@ import { ApiKeysTable } from "@/components/ApiKeysTable";
 import { OnboardingSurveyDialog } from "@/components/OnboardingSurveyDialog";
 
 type ApiKey = {
+  id: string;
+  clerkUserId: string;
   name?: string;
   keyValue: string;
   createdAt: string;
@@ -31,9 +33,21 @@ function withApiKeyStatus(apiKey: ApiKeyResponse): ApiKey {
   };
 }
 
+async function fetchApiKeys() {
+  const response = await fetch("/api/api-key");
+
+  if (!response.ok) {
+    throw new Error("Could not load API keys");
+  }
+
+  const data: { apiKeys: ApiKeyResponse[] } = await response.json();
+
+  return data.apiKeys.map(withApiKeyStatus);
+}
+
 export function Dashboard() {
-  const [apiKey, setApiKey] = useState<ApiKey | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [apiKeys, setApiKeys] = useState<ApiKey[]>([]);
+  const [loading, setLoading] = useState(true);
   const [surveyLoading, setSurveyLoading] = useState(false);
   const [surveyRequired, setSurveyRequired] = useState(false);
   const [creating, setCreating] = useState(false);
@@ -41,29 +55,45 @@ export function Dashboard() {
   const [renaming, setRenaming] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  async function loadApiKeys() {
+    setLoading(true);
+    setError(null);
+
+    try {
+      setApiKeys(await fetchApiKeys());
+    } catch {
+      setError("Could not load your API keys.");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   useEffect(() => {
-    async function loadApiKey() {
-      setLoading(true);
-      setError(null);
+    let ignore = false;
 
+    async function loadInitialApiKeys() {
       try {
-        const response = await fetch("/api/api-key");
+        const keys = await fetchApiKeys();
 
-        if (!response.ok) {
-          setError("Could not load your API key.");
-          return;
+        if (!ignore) {
+          setApiKeys(keys);
         }
-
-        const data: { apiKey: ApiKeyResponse | null } = await response.json();
-        setApiKey(data.apiKey ? withApiKeyStatus(data.apiKey) : null);
       } catch {
-        setError("Could not load your API key.");
+        if (!ignore) {
+          setError("Could not load your API keys.");
+        }
       } finally {
-        setLoading(false);
+        if (!ignore) {
+          setLoading(false);
+        }
       }
     }
 
-    loadApiKey();
+    loadInitialApiKeys();
+
+    return () => {
+      ignore = true;
+    };
   }, []);
 
   useEffect(() => {
@@ -98,12 +128,16 @@ export function Dashboard() {
       const response = await fetch("/api/api-key", { method: "POST" });
 
       if (!response.ok) {
+        if (response.status === 409) {
+          setError("You can create up to 5 API keys.");
+          return;
+        }
+
         setError("Could not create your API key.");
         return;
       }
 
-      const data: { apiKey: ApiKeyResponse } = await response.json();
-      setApiKey(withApiKeyStatus(data.apiKey));
+      await loadApiKeys();
     } catch {
       setError("Could not create your API key.");
     } finally {
@@ -111,19 +145,19 @@ export function Dashboard() {
     }
   }
 
-  async function deleteApiKey() {
+  async function deleteApiKey(id: string) {
     setDeleting(true);
     setError(null);
 
     try {
-      const response = await fetch("/api/api-key", { method: "DELETE" });
+      const response = await fetch(`/api/api-key/${id}`, { method: "DELETE" });
 
       if (!response.ok) {
         setError("Could not delete your API key.");
         return;
       }
 
-      setApiKey(null);
+      setApiKeys((currentKeys) => currentKeys.filter((key) => key.id !== id));
     } catch {
       setError("Could not delete your API key.");
     } finally {
@@ -131,12 +165,12 @@ export function Dashboard() {
     }
   }
 
-  async function renameApiKey(name: string) {
+  async function renameApiKey(id: string, name: string) {
     setRenaming(true);
     setError(null);
 
     try {
-      const response = await fetch("/api/api-key", {
+      const response = await fetch(`/api/api-key/${id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name }),
@@ -148,7 +182,11 @@ export function Dashboard() {
       }
 
       const data: { apiKey: ApiKeyResponse } = await response.json();
-      setApiKey(withApiKeyStatus(data.apiKey));
+      setApiKeys((currentKeys) =>
+        currentKeys.map((key) =>
+          key.id === data.apiKey.id ? withApiKeyStatus(data.apiKey) : key,
+        ),
+      );
       return true;
     } catch {
       setError("Could not rename your API key.");
@@ -164,10 +202,9 @@ export function Dashboard() {
     surveyRequired ||
     creating ||
     deleting ||
-    (Boolean(apiKey) && !apiKey?.expired);
-  const createButtonLabel = apiKey?.expired
-    ? "Generate New Key"
-    : "Create New Key";
+    apiKeys.length >= 5;
+  const createButtonLabel =
+    apiKeys.length >= 5 ? "Key Limit Reached" : "Create New Key";
 
   return (
     <Box
@@ -194,8 +231,8 @@ export function Dashboard() {
                 API Keys
               </Typography>
               <Typography color="text.secondary" variant="caption">
-                Create and manage the keys used to access the API. Each key is
-                active for 90 days only
+                Create and manage up to 5 keys used to access the API. Each key
+                is active for 90 days only
               </Typography>
             </Stack>
 
@@ -220,7 +257,7 @@ export function Dashboard() {
 
           <Paper sx={{ border: "none", borderRadius: 1, overflow: "hidden" }}>
             <ApiKeysTable
-              apiKey={apiKey}
+              apiKeys={apiKeys}
               loading={loading}
               deleting={deleting}
               renaming={renaming}
