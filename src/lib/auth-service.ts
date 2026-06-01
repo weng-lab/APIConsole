@@ -6,9 +6,33 @@ type AuthServiceRequestOptions = {
   token: string;
 };
 
+type JwtClaims = {
+  azp?: unknown;
+  exp?: unknown;
+  iss?: unknown;
+  sid?: unknown;
+  sub?: unknown;
+};
+
 function parseJson(text: string) {
   try {
     return JSON.parse(text) as unknown;
+  } catch {
+    return null;
+  }
+}
+
+function decodeJwtClaims(token: string): JwtClaims | null {
+  const [, payload] = token.split(".");
+
+  if (!payload) {
+    return null;
+  }
+
+  try {
+    return JSON.parse(
+      Buffer.from(payload, "base64url").toString("utf8"),
+    ) as JwtClaims;
   } catch {
     return null;
   }
@@ -44,8 +68,10 @@ export async function callAuthService(
   const url = getAuthServiceUrl(path);
 
   console.info("calling auth-service", {
+    clerkTokenClaims: decodeJwtClaims(token),
     method,
     path: url.pathname,
+    tokenLength: token.length,
     upstreamHost: url.host,
   });
 
