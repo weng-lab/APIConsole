@@ -6,6 +6,8 @@ type AuthServiceRequestOptions = {
   token: string;
 };
 
+const AUTH_SERVICE_TIMEOUT_MS = 15_000;
+
 type JwtClaims = {
   azp?: unknown;
   exp?: unknown;
@@ -66,6 +68,8 @@ export async function callAuthService(
   { body, method = "GET", token }: AuthServiceRequestOptions,
 ) {
   const url = getAuthServiceUrl(path);
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), AUTH_SERVICE_TIMEOUT_MS);
 
   console.info("calling auth-service", {
     clerkTokenClaims: decodeJwtClaims(token),
@@ -75,14 +79,30 @@ export async function callAuthService(
     upstreamHost: url.host,
   });
 
-  return fetch(url, {
-    body: body === undefined ? undefined : JSON.stringify(body),
-    headers: {
-      Authorization: `Bearer ${token}`,
-      ...(body === undefined ? {} : { "Content-Type": "application/json" }),
-    },
-    method,
-  });
+  try {
+    return await fetch(url, {
+      body: body === undefined ? undefined : JSON.stringify(body),
+      headers: {
+        Authorization: `Bearer ${token}`,
+        ...(body === undefined ? {} : { "Content-Type": "application/json" }),
+      },
+      method,
+      signal: controller.signal,
+    });
+  } catch (error) {
+    if (controller.signal.aborted) {
+      console.error("auth-service request timed out", {
+        method,
+        path: url.pathname,
+        timeoutMs: AUTH_SERVICE_TIMEOUT_MS,
+        upstreamHost: url.host,
+      });
+    }
+
+    throw error;
+  } finally {
+    clearTimeout(timeout);
+  }
 }
 
 export async function proxyAuthServiceResponse(response: Response) {

@@ -22,7 +22,12 @@ export async function GET() {
     const response = await callAuthService("survey-response", { token });
 
     return proxyAuthServiceResponse(response);
-  } catch {
+  } catch (error) {
+    console.error(
+      "Could not proxy GET /api/survey-response to auth-service",
+      error,
+    );
+
     return Response.json(
       { error: "Could not reach auth service" },
       { status: 502 },
@@ -53,7 +58,12 @@ export async function POST(request: Request) {
     });
 
     return proxyAuthServiceResponse(response);
-  } catch {
+  } catch (error) {
+    console.error(
+      "Could not proxy POST /api/survey-response to auth-service",
+      error,
+    );
+
     return Response.json(
       { error: "Could not reach auth service" },
       { status: 502 },
