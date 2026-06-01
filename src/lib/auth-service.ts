@@ -6,6 +6,14 @@ type AuthServiceRequestOptions = {
   token: string;
 };
 
+function parseJson(text: string) {
+  try {
+    return JSON.parse(text) as unknown;
+  } catch {
+    return null;
+  }
+}
+
 function getAuthServiceUrl(path: string) {
   const baseUrl = process.env.AUTH_SERVICE_URL;
 
@@ -32,10 +40,21 @@ export async function callAuthService(
 
 export async function proxyAuthServiceResponse(response: Response) {
   const contentType = response.headers.get("content-type");
+  const text = await response.text();
 
-  if (contentType?.includes("application/json")) {
-    return Response.json(await response.json(), { status: response.status });
+  if (!response.ok) {
+    console.error("auth-service returned an error", {
+      body: text.slice(0, 1000),
+      status: response.status,
+      statusText: response.statusText,
+    });
   }
 
-  return new Response(await response.text(), { status: response.status });
+  if (contentType?.includes("application/json")) {
+    return Response.json(parseJson(text) ?? { error: text }, {
+      status: response.status,
+    });
+  }
+
+  return new Response(text, { status: response.status });
 }

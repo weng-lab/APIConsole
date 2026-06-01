@@ -43,7 +43,9 @@ export async function DELETE() {
         );
       }
     }
-  } catch {
+  } catch (error) {
+    console.error("Could not clean up auth-service keys", error);
+
     return Response.json(
       { error: "Could not reach auth service" },
       { status: 502 },

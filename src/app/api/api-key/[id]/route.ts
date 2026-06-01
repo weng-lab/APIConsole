@@ -39,7 +39,12 @@ export async function PATCH(request: Request, context: RouteContext) {
     });
 
     return proxyAuthServiceResponse(response);
-  } catch {
+  } catch (error) {
+    console.error(
+      "Could not proxy PATCH /api/api-key/:id to auth-service",
+      error,
+    );
+
     return Response.json(
       { error: "Could not reach auth service" },
       { status: 502 },
@@ -62,7 +67,12 @@ export async function DELETE(_request: Request, context: RouteContext) {
     });
 
     return proxyAuthServiceResponse(response);
-  } catch {
+  } catch (error) {
+    console.error(
+      "Could not proxy DELETE /api/api-key/:id to auth-service",
+      error,
+    );
+
     return Response.json(
       { error: "Could not reach auth service" },
       { status: 502 },
