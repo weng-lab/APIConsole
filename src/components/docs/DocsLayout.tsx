@@ -22,7 +22,7 @@ export function DocsLayout({ activeHref, children, title }: DocsLayoutProps) {
                 API Docs
               </Typography>
               <Typography color="text.secondary" variant="caption">
-                Authenticated documentation for using the SCREEN GraphQL API.
+                Documentation for using the SCREEN GraphQL API.
               </Typography>
             </Stack>
 

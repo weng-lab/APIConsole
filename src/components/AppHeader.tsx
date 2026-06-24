@@ -6,9 +6,10 @@ import { AppBar, Box, Button, Stack, Toolbar, Typography } from "@mui/material";
 import { usePathname } from "next/navigation";
 import { AccountMenu } from "@/components/AccountMenu";
 
-const navItems = [
+const publicNavItems = [{ href: "/docs", label: "Docs" }];
+
+const signedInNavItems = [
   { href: "/dashboard", label: "Dashboard" },
-  { href: "/docs", label: "Docs" },
 ];
 
 export function AppHeader() {
@@ -46,14 +47,34 @@ export function AppHeader() {
           </Stack>
         </Box>
 
-        <Show when="signed-in">
-          <Stack
-            component="nav"
-            direction="row"
-            spacing={0.5}
-            sx={{ display: "flex" }}
-          >
-            {navItems.map(({ href, label }) => {
+        <Stack component="nav" direction="row" spacing={0.5} sx={{ display: "flex" }}>
+          {publicNavItems.map(({ href, label }) => {
+            const active = pathname === href || pathname.startsWith(`${href}/`);
+
+            return (
+              <Button
+                color="inherit"
+                component={Link}
+                href={href}
+                key={href}
+                sx={{
+                  bgcolor: active ? "rgba(255, 255, 255, 0.16)" : "transparent",
+                  color: active ? "#ffffff" : "#d8d8d8",
+                  minWidth: 0,
+                  px: { xs: 1, sm: 1.5 },
+                  "&:hover": {
+                    bgcolor: "rgba(255, 255, 255, 0.12)",
+                    color: "#ffffff",
+                  },
+                }}
+                variant="text"
+              >
+                {label}
+              </Button>
+            );
+          })}
+          <Show when="signed-in">
+            {signedInNavItems.map(({ href, label }) => {
               const active = pathname === href || pathname.startsWith(`${href}/`);
 
               return (
@@ -78,7 +99,9 @@ export function AppHeader() {
                 </Button>
               );
             })}
-          </Stack>
+          </Show>
+        </Stack>
+        <Show when="signed-in">
           <AccountMenu />
         </Show>
         {pathname === "/login" ? null : (

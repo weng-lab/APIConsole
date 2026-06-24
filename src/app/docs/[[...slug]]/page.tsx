@@ -20,7 +20,7 @@ export async function generateMetadata({ params }: DocsPageProps): Promise<Metad
 
   return {
     title: `${doc.title} | API Console Docs`,
-    description: "Authenticated documentation for using the SCREEN GraphQL API.",
+    description: "Documentation for using the SCREEN GraphQL API.",
   };
 }
 

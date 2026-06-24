@@ -1,6 +1,6 @@
 # Docs System
 
-The `/docs` pages render Markdown files from `src/docs` for signed-in users.
+The public `/docs` pages render Markdown files from `src/docs`.
 
 ## Page Registration
 

@@ -1,6 +1,6 @@
 # API Console
 
-API Console is a Next.js app for Clerk-authenticated users to create and manage API keys through `auth-service`. It also hosts authenticated Markdown documentation for the SCREEN GraphQL API.
+API Console is a Next.js app for Clerk-authenticated users to create and manage API keys through `auth-service`. It also hosts public Markdown documentation for the SCREEN GraphQL API.
 
 Generated API keys are owned by `auth-service`. This app proxies key management requests to `AUTH_SERVICE_URL` with the user's Clerk session token.
 
@@ -9,7 +9,7 @@ Generated API keys are owned by `auth-service`. This app proxies key management 
 - Provides Clerk sign-in and sign-up at `/`.
 - Redirects signed-in users to `/dashboard`.
 - Lets each user create, reveal, copy, rename, and delete up to 5 API keys.
-- Serves protected docs under `/docs`.
+- Serves public docs under `/docs`.
 
 ## Stack
 
