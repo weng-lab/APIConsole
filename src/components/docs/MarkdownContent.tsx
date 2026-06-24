@@ -91,14 +91,16 @@ export function MarkdownContent({ currentFilePath, markdown }: MarkdownContentPr
     >
       <ReactMarkdown
         components={{
-          a: ({ children, href }) => {
+          a: ({ children, href, node: _node, ...props }) => {
+            void _node;
             const isExternal = href?.startsWith("http://") || href?.startsWith("https://");
 
             return (
               <a
+                {...props}
                 href={href ? getDocHrefForMarkdownPath(href, currentFilePath) : href}
-                rel={isExternal ? "noopener noreferrer" : undefined}
-                target={isExternal ? "_blank" : undefined}
+                rel={isExternal ? (props.rel ?? "noopener noreferrer") : props.rel}
+                target={isExternal ? (props.target ?? "_blank") : props.target}
               >
                 {children}
               </a>

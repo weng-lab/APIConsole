@@ -1,5 +1,12 @@
 # Getting Functional Characterization Details
 
+
+<p style="color: #ff0000; font-size: 1rem; font-weight: 700;">
+  NOTE: You can also find functional characterization data to download in functional characterization section of 
+  <a href="https://screen.wenglab.org/downloads" target="_blank" rel="noopener noreferrer" style="color: #0969da; text-decoration: underline;">https://screen.wenglab.org/downloads</a>
+</p>
+
+
 ## Query VISTA enhancer regions
 
 Returns VISTA enhancer regions with tissues,result and element id 

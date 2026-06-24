@@ -4,12 +4,11 @@
 
 **NOTE: RAMPAGE data is only available for GRCh38**
 
-Returns RAMPAGE data for the OR51B4 gene.
+Returns RAMPAGE data for the SOX4 gene.
 
 ```graphql
   query  {
-  tssrampageQuery(genename: "OR51B4"
-) {
+  tssrampageQuery(genename: "SOX4") {
     start
     geneName
     organ
