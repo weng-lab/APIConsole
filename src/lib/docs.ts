@@ -56,50 +56,103 @@ export const docsSections: DocSection[] = [
     ],
   },
   {
-    title: "Queries",
-    items: [
-      {
-        filePath: "queries/ccres.md",
-        href: "/docs/queries/ccres",
-        slug: ["queries", "ccres"],
-        title: "Searching cCREs",
-      },
-      {
-        filePath: "queries/ccredetails.md",
-        href: "/docs/queries/ccre-details",
-        slug: ["queries", "ccre-details"],
-        title: "cCRE Details",
-      },
-      {
-        filePath: "queries/functionalcharacterizationdata.md",
+  title: "cCRE Queries",
+  items: [
+    {
+      filePath: "queries/cCREQueries/ccres.md",
+      href: "/docs/queries/ccres",
+      slug: ["queries", "ccres"],
+      title: "cCRE Details",
+    },
+    {
+      filePath: "queries/cCREQueries/genes.md",
+      href: "/docs/queries/ccre-genesdetails",
+      slug: ["queries", "ccre-genesdetails"],
+      title: "cCRE - Gene Details",
+    },
+     {
+      filePath: "queries/cCREQueries/variants.md",
+      href: "/docs/queries/ccre-variantsdetails",
+      slug: ["queries", "ccre-variantsdetails"],
+      title: "cCRE - Variant Details",
+    },
+    {
+      filePath: "queries/cCREQueries/conservation.md",
+      href: "/docs/queries/conservation",
+      slug: ["queries", "conservation"],
+      title: "Conservation",
+    },
+    {
+      filePath: "queries/cCREQueries/tfmotifs.md",
+      href: "/docs/queries/tfmotifs",
+      slug: ["queries", "tfmotifs"],
+      title: "TF Motifs",
+    },
+    {
+        filePath: "queries/cCREQueries/functionalcharacterizationdata.md",
         href: "/docs/queries/functional-characterization-data",
         slug: ["queries", "functional-characterization-data"],
         title: "Functional Characterization",
-      },
+    },
+    {
+        filePath: "queries/cCREQueries/additionalchromatinsig.md",
+        href: "/docs/queries/additional-chromatin-signature",
+        slug: ["queries", "additional-chromatin-signature"],
+        title: "Additional Chromatin Signature",
+    },
+  ],
+  },
+  {
+    title: "Gene Queries",
+    items: [
       {
-        filePath: "queries/geneexpression.md",
+        filePath: "queries/geneQueries/geneexpression.md",
         href: "/docs/queries/gene-expression",
         slug: ["queries", "gene-expression"],
         title: "Gene Expression",
       },
       {
-        filePath: "queries/gwas.md",
-        href: "/docs/queries/gwas",
-        slug: ["queries", "gwas"],
-        title: "GWAS",
+        filePath: "queries/geneQueries/ccres.md",
+        href: "/docs/queries/linked-ccres",
+        slug: ["queries", "linked-ccres"],
+        title: "Linked cCREs",
       },
       {
-        filePath: "queries/rampage.md",
+        filePath: "queries/geneQueries/rampage.md",
         href: "/docs/queries/rampage",
         slug: ["queries", "rampage"],
         title: "RAMPAGE",
       },
       {
-        filePath: "queries/searchautocomplete.md",
-        href: "/docs/queries/search-autocomplete",
-        slug: ["queries", "search-autocomplete"],
-        title: "Search Autocomplete",
+        filePath: "queries/geneQueries/variants.md",
+        href: "/docs/queries/gene-eqtls",
+        slug: ["queries", "gene-eqtls"],
+        title: "Gene eQTLs",
       },
+    ],
+  }, 
+  {
+    title: "Variant Queries",
+    items: [
+      {
+        filePath: "queries/variantQueries/variant.md",
+        href: "/docs/queries/variant",
+        slug: ["queries", "variant"],
+        title: "Variants",
+      }
+      
+    ],
+  },
+  {
+    title: "GWAS Queries",
+    items: [
+      {
+        filePath: "queries/gwasQueries/gwas.md",
+        href: "/docs/queries/gwas",
+        slug: ["queries", "gwas"],
+        title: "GWAS",
+      }
+      
     ],
   },
 ];
