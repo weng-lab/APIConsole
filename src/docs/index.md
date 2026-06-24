@@ -1,5 +1,7 @@
 # SCREEN GraphQL API
 
+All data available on SCREEN is publicly downloadable at <a href="https://screen.wenglab.org/downloads" target="_blank" rel="noopener noreferrer" style="color: #0969da; text-decoration: underline;">https://screen.wenglab.org/downloads</a> and can also be accessed through the SCREEN API.
+
 The GraphQL API is the main way to programmatically access SCREEN data and metadata.
 
 ## GraphQL
