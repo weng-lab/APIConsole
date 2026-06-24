@@ -7,10 +7,10 @@ Clerk owns sign-in state. The app still checks auth in API handlers instead of r
 `src/proxy.ts` protects these routes:
 
 - `/dashboard`
-- `/docs` and `/docs/*`
-- `/docs/img/[filename]`
 
-Unauthenticated users are redirected to `/`.
+Unauthenticated users are redirected to `/login`.
+
+Documentation routes under `/docs` are public, including docs images under `/docs/img/[filename]`.
 
 ## Sign-In Flow
 
